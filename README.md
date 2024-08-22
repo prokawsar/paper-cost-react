@@ -24,8 +24,8 @@
 4. Rename `.env.local.example` to `.env` and update the following:
 
    ```
-   REACT_APP_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
-   REACT_APP_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
+   VITE_APP_SUPABASE_URL=[INSERT SUPABASE PROJECT URL]
+   VITE_APP_SUPABASE_ANON_KEY=[INSERT SUPABASE PROJECT API ANON KEY]
    ```
 
 5. You can now run the Next.js local development server:
