@@ -1,0 +1,22 @@
+{
+  "short_name": "Paper Cost",
+  "name": "Paper cost for paper factory",
+  "icons": [
+    {
+      "src": "logo.jpeg",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo.jpeg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "background_color": "#000",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#000",
+  "description": "Paper Cost Calculator"
+}
