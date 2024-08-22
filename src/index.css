@@ -24,7 +24,7 @@ body {
 }
 
 .brand-name {
-  background-image: url("../public/giphy.gif");
+  background-image: url("./giphy.gif");
   background-position: top;
   background-clip: text;
   -webkit-background-clip: text;
