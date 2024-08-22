@@ -7,6 +7,7 @@ import Login from "./pages/login";
 import { Layout } from "./pages/layout";
 import Dashboard from "./pages/dashboard/page";
 import History from "./pages/history/page";
+import HistoryDetail from "./pages/history/id/page";
 import HistoryTrash from "./pages/history/trash/page";
 import AuthProvider from "./components/context/AuthProvider";
 import Signup from "./pages/signup";
@@ -58,6 +59,14 @@ root.render(
           element={
             <AuthProvider>
               <History />
+            </AuthProvider>
+          }
+        />
+        <Route
+          path="/history/:id"
+          element={
+            <AuthProvider>
+              <HistoryDetail />
             </AuthProvider>
           }
         />
