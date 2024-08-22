@@ -35,7 +35,7 @@ export default function Modal({
   return (
     <div className="absolute top-0 left-0 bg-black bg-opacity-40 flex h-full w-full items-center justify-center z-10">
       <div
-        className={`bg-white p-2 rounded relative flex flex-col w-3/4`}
+        className={`bg-white p-2 rounded relative flex flex-col w-3/4 md:w-2/4`}
         ref={modalRef}
       >
         <button
