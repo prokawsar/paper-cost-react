@@ -3,5 +3,5 @@ export default function Loader() {
     <div className="flex h-[80vh] w-full items-center justify-center">
       <p>Loading...</p>
     </div>
-  )
+  );
 }

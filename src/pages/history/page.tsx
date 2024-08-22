@@ -7,21 +7,30 @@ import { sortedByCreatedAt } from "@utils/tools";
 import HistoryRow from "@components/HistoryRow";
 import { softDeleteHistory } from "@utils/services";
 import { toast } from "sonner";
+import { useLoadingStore } from "@store/index";
 
 export default function History() {
   document.title = "History";
-
+  const { setIsLoading } = useLoadingStore();
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
+
+  const getHistory = async () => {
+    const { data } = await supabase
+      .from("history")
+      .select()
+      .is("deleted_at", null);
+    setHistoryData(data);
+  };
   useEffect(() => {
-    const history = supabase.from("history").select().is("deleted_at", null);
-    history.then((data) => {
-      setHistoryData(data.data);
-    });
+    getHistory();
   }, []);
 
   const handleDelete = async (id: string) => {
+    setIsLoading(true);
     await softDeleteHistory(id);
     toast.message("History moved to trash!");
+    await getHistory();
+    setIsLoading(false);
   };
 
   return (

@@ -5,29 +5,40 @@ import { sortedByCreatedAt } from "@utils/tools";
 import HistoryRow from "@components/HistoryRow";
 import { toast } from "sonner";
 import { restoreHistory, deleteHistory } from "@utils/services";
+import { useLoadingStore } from "@store/index";
 
 export default function Trash() {
   document.title = "History Trash";
 
+  const { setIsLoading } = useLoadingStore();
+
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
-  useEffect(() => {
-    const history = supabase
+
+  const getHistory = async () => {
+    const { data } = await supabase
       .from("history")
       .select()
       .not("deleted_at", "is", null);
-    history.then((data) => {
-      setHistoryData(data.data);
-    });
+    setHistoryData(data);
+  };
+  useEffect(() => {
+    getHistory();
   }, []);
 
   const handleDelete = async (id: string) => {
+    setIsLoading(true);
     await deleteHistory(id);
-    toast.message("History moved to trash!");
+    toast.success("History deleted successfully");
+    await getHistory();
+    setIsLoading(false);
   };
 
   const handleRestore = async (id: string) => {
+    setIsLoading(true);
     await restoreHistory(id);
     toast.success("History restored successfully");
+    await getHistory();
+    setIsLoading(false);
   };
 
   return (
