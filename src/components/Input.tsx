@@ -1,9 +1,15 @@
+import { Paper } from "@/types/index";
 import { InputHTMLAttributes } from "react";
+import { UseFormRegister } from "react-hook-form";
 
 export default function Input({
+  name,
   classNames,
+  register,
   ...props
 }: {
+  name: string;
+  register?: UseFormRegister<Paper[]>;
   classNames?: string;
 } & InputHTMLAttributes<HTMLInputElement>) {
   return (

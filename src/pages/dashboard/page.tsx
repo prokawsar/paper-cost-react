@@ -5,19 +5,56 @@ import Result from "@components/Result";
 import { useState } from "react";
 import PaperItem from "@components/PaperItem";
 import { Paper } from "@/types/index";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { calculateCost } from "@utils/services";
 
 export default function Dashboard() {
   document.title = "Paper Cost";
 
   const [finalPrice, setFinalPrice] = useState(0);
+  const [customerName, setCustomerName] = useState("");
   const [showSaveHistory, setShowSaveHistory] = useState(false);
+  const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
+    new Map()
+  );
   const [paperCount, setPaperCount] = useState([
     { ...paperFields, id: makeid(5) },
   ]);
 
-  const addPaper = () => {};
-  const clearAll = () => {};
-  const calculatePaperCost = () => {};
+  const { handleSubmit, register } = useForm<Paper[]>();
+
+  const addPaper = () => {
+    setPaperCount([...paperCount, { ...paperFields, id: makeid(5) }]);
+  };
+
+  const handleRemovePaper = async (idx: string) => {
+    const filteredPapers = paperCount.filter((field) => field.id != idx);
+    setPaperCount(filteredPapers);
+
+    if (perPaperResult.has(idx)) perPaperResult.delete(idx);
+  };
+
+  const clearAll = () => {
+    setPaperCount([{ ...paperFields, id: makeid(5) }]);
+    setFinalPrice(0);
+    setCustomerName("");
+    perPaperResult.clear();
+  };
+
+  const calculatePaperCost = () => {
+    console.log(paperCount);
+    return;
+
+    perPaperResult.clear();
+    setFinalPrice(0);
+    paperCount.forEach((paper) => {
+      const totalPerPaper = calculateCost(paper);
+
+      perPaperResult.set(paper.id, totalPerPaper);
+      setFinalPrice(finalPrice + totalPerPaper);
+    });
+    // perPaperResult = perPaperResult
+  };
 
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
@@ -47,6 +84,8 @@ export default function Dashboard() {
                 index={index}
                 paper={paper}
                 totalPaper={paperCount.length}
+                perPaperResult={perPaperResult}
+                removePaper={(id) => handleRemovePaper(id)}
               />
             );
           })}
