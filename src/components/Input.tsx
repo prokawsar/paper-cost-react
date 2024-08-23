@@ -8,7 +8,7 @@ export default function Input({
   register,
   ...props
 }: {
-  name: string;
+  name: keyof Paper;
   register?: UseFormRegister<Paper[]>;
   classNames?: string;
 } & InputHTMLAttributes<HTMLInputElement>) {
