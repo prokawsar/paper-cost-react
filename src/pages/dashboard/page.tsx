@@ -10,6 +10,7 @@ export default function Dashboard() {
   document.title = "Paper Cost";
 
   const [finalPrice, setFinalPrice] = useState(0);
+  const [showSaveHistory, setShowSaveHistory] = useState(false);
   const [paperCount, setPaperCount] = useState([
     { ...paperFields, id: makeid(5) },
   ]);
@@ -31,6 +32,11 @@ export default function Dashboard() {
             placeholder="Product name"
             className="border-b py-[2px] border-dashed w-full h-full px-2 focus:outline-none focus:border-teal-500"
           />
+          {showSaveHistory && (
+            <Button classNames="text-sm animate-pulse !w-[30%] !px-1">
+              Save cost
+            </Button>
+          )}
         </div>
 
         <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
