@@ -1,10 +1,20 @@
+import Button from "@components/Button";
+import { MAX_PAPER, paperFields } from "@utils/constants";
+import { makeid } from "@utils/tools";
 import Result from "@components/Result";
 import { useState } from "react";
 
 export default function Dashboard() {
-  const [finalPrice, setFinalPrice] = useState(0);
-
   document.title = "Paper Cost";
+
+  const [finalPrice, setFinalPrice] = useState(0);
+  const [paperCount, setPaperCount] = useState([
+    { ...paperFields, id: makeid(5) },
+  ]);
+
+  const addPaper = () => {};
+  const clearAll = () => {};
+  const calculatePaperCost = () => {};
 
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
@@ -22,6 +32,27 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">
+          <div className="flex flex-row justify-between w-full mt-3">
+            <Button
+              classNames="text-sm"
+              onClick={addPaper}
+              disabled={paperCount.length == MAX_PAPER}
+            >
+              Add paper
+            </Button>
+
+            {finalPrice > 0 && (
+              <button
+                className="border border-red-200 rounded-md px-3 py-1 text-red-400 w-fit"
+                onClick={clearAll}
+              >
+                Clear
+              </button>
+            )}
+            {/* TODO: Set disabled state */}
+            <Button onClick={calculatePaperCost}>Calculate </Button>
+          </div>
+
           {finalPrice > 0 && (
             <div className="font-bold text-lg flex w-full">
               <Result total={finalPrice} />
