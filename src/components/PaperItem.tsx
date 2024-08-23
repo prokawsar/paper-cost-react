@@ -2,7 +2,7 @@ import { Paper } from "@/types/index";
 import { fields, placeholders } from "@utils/constants";
 import { Icon } from "@iconify/react";
 import Input from "./Input";
-import { useForm, UseFormRegister } from "react-hook-form";
+import { Controller, UseFormRegister } from "react-hook-form";
 
 export default function PaperItem({
   paper,
@@ -10,12 +10,14 @@ export default function PaperItem({
   index,
   perPaperResult,
   removePaper,
+  register,
 }: {
   paper: Paper;
   totalPaper: number;
   index: number;
   perPaperResult: Map<string, number>;
   removePaper: (id: string) => void;
+  register?: UseFormRegister<Paper[]>;
 }) {
   return (
     <div
@@ -30,9 +32,26 @@ export default function PaperItem({
         >
           <Icon icon="ph:trash-light" width="16px" />
         </button>
-        {fields.map((field: string, index) => {
+        {fields.map((fieldName: string, index) => {
           return (
-            <Input name={field} key={index} placeholder={placeholders[field]} />
+            // <Controller
+            //   name={fieldName}
+            //   control={control}
+            //   render={({ field }) => (
+            //     <Input
+            //       {...field}
+            //       name={fieldName}
+            //       key={index}
+            //       placeholder={placeholders[fieldName]}
+            //     />
+            //   )}
+            // />
+
+            <Input
+              name={fieldName}
+              key={index}
+              placeholder={placeholders[fieldName]}
+            />
           );
         })}
       </div>
