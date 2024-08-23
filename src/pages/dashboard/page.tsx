@@ -3,6 +3,8 @@ import { MAX_PAPER, paperFields } from "@utils/constants";
 import { makeid } from "@utils/tools";
 import Result from "@components/Result";
 import { useState } from "react";
+import PaperItem from "@components/PaperItem";
+import { Paper } from "@/types/index";
 
 export default function Dashboard() {
   document.title = "Paper Cost";
@@ -29,6 +31,19 @@ export default function Dashboard() {
             placeholder="Product name"
             className="border-b py-[2px] border-dashed w-full h-full px-2 focus:outline-none focus:border-teal-500"
           />
+        </div>
+
+        <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
+          {paperCount.map((paper: Paper, index) => {
+            return (
+              <PaperItem
+                key={index}
+                index={index}
+                paper={paper}
+                totalPaper={paperCount.length}
+              />
+            );
+          })}
         </div>
 
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">
