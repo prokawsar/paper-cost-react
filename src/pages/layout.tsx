@@ -1,9 +1,12 @@
 import GlobalLoader from "@components/GlobalLoader";
 import Footer from "@components/Footer";
 import { Toaster } from "sonner";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigation } from "react-router-dom";
+import Loader from "@components/Loader";
 
 export function Layout() {
+  const { state } = useNavigation();
+
   return (
     <main className="h-[100svh] flex flex-col justify-between">
       <div className="flex flex-col h-[92%] items-center">
@@ -14,7 +17,7 @@ export function Layout() {
           <div className="bg-gradient-to-r from-transparent via-orange-800/40 to-transparent p-[1px]" />
         </nav>
         {/* {children} */}
-        <Outlet />
+        {state == "loading" ? <Loader /> : <Outlet />}
       </div>
       <GlobalLoader />
       <Toaster richColors position="bottom-right" closeButton />
