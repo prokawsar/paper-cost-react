@@ -15,11 +15,13 @@ export default function Trash() {
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
 
   const getHistory = async () => {
+    setIsLoading(true);
     const { data } = await supabase
       .from("history")
       .select()
       .not("deleted_at", "is", null);
     setHistoryData(data);
+    setIsLoading(false);
   };
   useEffect(() => {
     getHistory();
