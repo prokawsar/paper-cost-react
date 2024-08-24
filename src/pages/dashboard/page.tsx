@@ -80,7 +80,7 @@ export default function Dashboard() {
           {paperCount.map((paper: Paper, index) => {
             return (
               <PaperItem
-                key={index}
+                key={paper.id}
                 index={index}
                 paper={paper}
                 totalPaper={paperCount.length}

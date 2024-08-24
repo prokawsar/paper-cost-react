@@ -67,10 +67,6 @@ export default function History() {
             <Icon icon="ph:trash-light" width="16px" />
             History Trash
           </Link>
-
-          {/* <div className="fixed flex h-[70%] w-[90%] items-center justify-center">
-					<Loader />
-				</div> */}
         </div>
       </div>
     </section>

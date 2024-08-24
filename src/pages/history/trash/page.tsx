@@ -70,10 +70,6 @@ export default function Trash() {
           ) : (
             <p className="text-center text-gray-500">Trash is empty</p>
           )}
-
-          {/* <div className="fixed flex h-[70%] w-[90%] items-center justify-center">
-					<Loader />
-				</div> */}
         </div>
       </div>
     </section>
