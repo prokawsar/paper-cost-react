@@ -1,9 +1,9 @@
 import GlobalLoader from "@components/GlobalLoader";
 import Footer from "@components/Footer";
-import { ReactNode } from "react";
 import { Toaster } from "sonner";
+import { Outlet } from "react-router-dom";
 
-export function Layout({ children }: { children: ReactNode }) {
+export function Layout() {
   return (
     <main className="h-[100svh] flex flex-col justify-between">
       <div className="flex flex-col h-[92%] items-center">
@@ -13,7 +13,8 @@ export function Layout({ children }: { children: ReactNode }) {
           </p>
           <div className="bg-gradient-to-r from-transparent via-orange-800/40 to-transparent p-[1px]" />
         </nav>
-        {children}
+        {/* {children} */}
+        <Outlet />
       </div>
       <GlobalLoader />
       <Toaster richColors position="bottom-right" closeButton />

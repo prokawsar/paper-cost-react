@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "./pages/login";
 import { Layout } from "./pages/layout";
 import Dashboard from "./pages/dashboard/page";
@@ -12,76 +12,82 @@ import HistoryTrash from "./pages/history/trash/page";
 import AuthProvider from "./components/context/AuthProvider";
 import Signup from "./pages/signup";
 import Error from "./pages/error";
+import { StrictMode } from "react";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-root.render(
-  <BrowserRouter>
-    <Layout>
-      <Routes>
-        <Route
-          path="/"
-          index
-          element={
-            <AuthProvider>
-              <App />
-            </AuthProvider>
-          }
-        />
 
-        <Route
-          path="/login"
-          element={
-            <AuthProvider>
-              <Login />
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <AuthProvider>
-              <Signup />
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <AuthProvider>
-              <Dashboard />
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/history"
-          element={
-            <AuthProvider>
-              <History />
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/history/:id"
-          element={
-            <AuthProvider>
-              <HistoryDetail />
-            </AuthProvider>
-          }
-        />
-        <Route
-          path="/history/trash"
-          element={
-            <AuthProvider>
-              <HistoryTrash />
-            </AuthProvider>
-          }
-        />
-        <Route path="/*" element={<Error />} />
-      </Routes>
-    </Layout>
-  </BrowserRouter>
+const router = createBrowserRouter([
+  {
+    path: "/",
+    errorElement: <Error />,
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: (
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <AuthProvider>
+            <Login />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: "/signup",
+        element: (
+          <AuthProvider>
+            <Signup />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: "/history",
+        element: (
+          <AuthProvider>
+            <History />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: "/history/trash",
+        element: (
+          <AuthProvider>
+            <HistoryTrash />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: "/history/:id",
+        element: (
+          <AuthProvider>
+            <HistoryDetail />
+          </AuthProvider>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <AuthProvider>
+            <Dashboard />
+          </AuthProvider>
+        ),
+      },
+    ],
+  },
+]);
+
+root.render(
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
