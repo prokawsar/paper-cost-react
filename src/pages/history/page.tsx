@@ -2,36 +2,32 @@ import { supabase } from "@db/supabase";
 import { CostHistoryType } from "@/types";
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import { sortedByCreatedAt } from "@utils/tools";
 import HistoryRow from "@components/HistoryRow";
-import { softDeleteHistory } from "@utils/services";
+import { getAllHistory, softDeleteHistory } from "@utils/services";
 import { toast } from "sonner";
 import { useLoadingStore } from "@store/index";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function History() {
   document.title = "History";
   const { setIsLoading } = useLoadingStore();
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
+  const data = useLoaderData();
+  const queryClient = useQueryClient();
 
-  const getHistory = async () => {
-    setIsLoading(true);
-    const { data } = await supabase
-      .from("history")
-      .select()
-      .is("deleted_at", null);
-    setHistoryData(data);
-    setIsLoading(false);
-  };
   useEffect(() => {
-    getHistory();
+    setHistoryData(data as unknown as CostHistoryType[]);
   }, []);
 
   const handleDelete = async (id: string) => {
     setIsLoading(true);
     await softDeleteHistory(id);
     toast.message("History moved to trash!");
-    await getHistory();
+    // await getHistory();
+    await getAllHistory();
+    queryClient.invalidateQueries({ queryKey: ["history"] });
     setIsLoading(false);
   };
 

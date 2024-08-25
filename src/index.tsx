@@ -13,10 +13,14 @@ import AuthProvider from "./components/context/AuthProvider";
 import Signup from "./pages/signup";
 import Error from "./pages/error";
 import { StrictMode } from "react";
+import { getAllHistory } from "./utils/services";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -50,6 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/history",
+        loader: getAllHistory,
         element: (
           <AuthProvider>
             <History />
@@ -86,7 +91,9 @@ const router = createBrowserRouter([
 
 root.render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </StrictMode>
 );
 

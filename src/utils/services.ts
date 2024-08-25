@@ -1,6 +1,10 @@
 import { supabase } from "@db/supabase";
 import { PAPER_FIXED } from "./constants";
 import { CostHistoryType, Paper } from "@/types/index";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+// const queryClient = useQueryClient();
 
 export const calculateCost = (paper: Paper): number => {
   const paperSize =
@@ -50,7 +54,20 @@ export const getHistory = async (
   if (!error) {
     return data as unknown as CostHistoryType[];
   }
-  return null;
+  throw error;
+};
+
+export const getAllHistory = async () => {
+  const { data, error } = await queryClient.fetchQuery({
+    queryKey: ["history"],
+    queryFn: () => {
+      return supabase.from("history").select().is("deleted_at", null);
+    },
+  });
+  if (!error) {
+    return data as unknown as CostHistoryType[];
+  }
+  throw error;
 };
 
 export const softDeleteHistory = async (id: string) => {
