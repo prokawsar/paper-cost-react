@@ -8,28 +8,34 @@ import HistoryRow from "@components/HistoryRow";
 import { getAllHistory, softDeleteHistory } from "@utils/services";
 import { toast } from "sonner";
 import { useLoadingStore } from "@store/index";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 export default function History() {
   document.title = "History";
   const { setIsLoading } = useLoadingStore();
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
-  const data = useLoaderData();
+  // const data = useLoaderData();
+  const { data } = useQuery({ queryKey: ["history"] });
   const queryClient = useQueryClient();
-
+  console.log(data.data);
   useEffect(() => {
-    setHistoryData(data as unknown as CostHistoryType[]);
+    setHistoryData(data.data as unknown as CostHistoryType[]);
   }, []);
 
-  const handleDelete = async (id: string) => {
-    setIsLoading(true);
-    await softDeleteHistory(id);
-    toast.message("History moved to trash!");
-    // await getHistory();
-    await getAllHistory();
-    queryClient.invalidateQueries({ queryKey: ["history"] });
-    setIsLoading(false);
-  };
+  const handleDelete = useMutation({
+    mutationFn: (id: string) => softDeleteHistory(id),
+    onSuccess: () => {
+      toast.message("History moved to trash!");
+      queryClient.invalidateQueries({ queryKey: ["history"] });
+    },
+  });
+  // setIsLoading(true);
+  // await softDeleteHistory(id);
+  // toast.message("History moved to trash!");
+  // await getHistory();
+  // queryClient.invalidateQueries({ queryKey: ["history"] });
+  // await getAllHistory(queryClient);
+  // setIsLoading(false);
 
   return (
     <section className="max-w-6xl mx-auto flex w-full h-full max-h-[90%] flex-col gap-4 px-4 pt-5">
@@ -49,7 +55,7 @@ export default function History() {
                 <HistoryRow
                   cost={cost}
                   key={cost.id}
-                  handleDelete={(id) => handleDelete(id)}
+                  handleDelete={(id) => handleDelete.mutate(id)}
                 />
               ))}
             </div>

@@ -54,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/history",
-        loader: getAllHistory,
+        loader: () => getAllHistory(queryClient),
         element: (
           <AuthProvider>
             <History />

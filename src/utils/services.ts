@@ -1,10 +1,7 @@
 import { supabase } from "@db/supabase";
 import { PAPER_FIXED } from "./constants";
 import { CostHistoryType, Paper } from "@/types/index";
-import { QueryClient, useQueryClient } from "@tanstack/react-query";
-
-const queryClient = new QueryClient();
-// const queryClient = useQueryClient();
+import { QueryClient } from "@tanstack/react-query";
 
 export const calculateCost = (paper: Paper): number => {
   const paperSize =
@@ -57,7 +54,7 @@ export const getHistory = async (
   throw error;
 };
 
-export const getAllHistory = async () => {
+export const getAllHistory = async (queryClient: QueryClient) => {
   const { data, error } = await queryClient.fetchQuery({
     queryKey: ["history"],
     queryFn: () => {
