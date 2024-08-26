@@ -20,7 +20,7 @@ export default function History() {
   console.log(data.data);
   useEffect(() => {
     setHistoryData(data.data as unknown as CostHistoryType[]);
-  }, []);
+  }, [data]);
 
   const handleDelete = useMutation({
     mutationFn: (id: string) => softDeleteHistory(id),

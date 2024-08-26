@@ -36,7 +36,7 @@ export default function AuthProvider({
         navigate("/dashboard");
       }
     }
-  }, [navigate, location, userData, setUser]);
+  }, [userData]);
 
   return (
     <AuthContext.Provider value={{ userData }}>{children}</AuthContext.Provider>
