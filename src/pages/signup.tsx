@@ -28,11 +28,11 @@ export default function Signup() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_VERCEL_URL
-          ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-          : "http://localhost:3000",
-      },
+      // options: {
+      //   emailRedirectTo: process.env.NEXT_PUBLIC_VERCEL_URL
+      //     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      //     : "http://localhost:3000",
+      // },
     });
     if (error) {
       toast.error(error.message);
@@ -41,7 +41,6 @@ export default function Signup() {
     // navigate("/login?success=Check email to continue sign in process");
     navigate("/dashboard");
   };
-  console.log(errors);
   document.title = "Signup";
 
   return (

@@ -1,9 +1,11 @@
 import { defineConfig } from "vite";
+import { loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-export default defineConfig(() => {
-  return {
+export default ({ mode }: { mode: string }) => {
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  return defineConfig({
     build: {
       outDir: "build",
     },
@@ -21,5 +23,5 @@ export default defineConfig(() => {
         "@utils": path.resolve(__dirname, "src/utils/"),
       },
     },
-  };
-});
+  });
+};
