@@ -1,13 +1,13 @@
-import { supabase } from "@db/supabase";
+import { supabase } from "@/db/supabase";
 import { CostHistoryType } from "@/types";
 import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
-import { sortedByCreatedAt } from "@utils/tools";
-import HistoryRow from "@components/HistoryRow";
-import { softDeleteHistory } from "@utils/services";
+import { sortedByCreatedAt } from "@/utils/tools";
+import HistoryRow from "@/components/HistoryRow";
+import { softDeleteHistory } from "@/utils/services";
 import { toast } from "sonner";
-import { useLoadingStore } from "@store/index";
+import { useLoadingStore } from "@/store/index";
 
 export default function History() {
   document.title = "History";

@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import { useLoadingStore } from "@store/index";
+import { useLoadingStore } from "@/store/index";
 
 export default function GlobalLoader() {
   const { isLoading } = useLoadingStore();

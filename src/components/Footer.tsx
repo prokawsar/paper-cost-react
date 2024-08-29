@@ -2,8 +2,8 @@ import { Icon } from "@iconify/react";
 import { useState } from "react";
 import Modal from "./Modal";
 import About from "./About";
-import { useUserStore } from "@store/index";
-import { supabase } from "@db/supabase";
+import { useUserStore } from "@/store/index";
+import { supabase } from "@/db/supabase";
 import { Link, useNavigate } from "react-router-dom";
 import AuthButton from "./AuthButton";
 

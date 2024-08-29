@@ -1,5 +1,5 @@
 import { Paper } from "@/types/index";
-import { fields, placeholders } from "@utils/constants";
+import { fields, placeholders } from "@/utils/constants";
 import { Icon } from "@iconify/react";
 import Input from "./Input";
 import { Controller, UseFormRegister } from "react-hook-form";

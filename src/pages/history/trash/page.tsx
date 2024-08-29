@@ -1,11 +1,11 @@
-import { supabase } from "@db/supabase";
+import { supabase } from "@/db/supabase";
 import { CostHistoryType } from "@/types";
 import { useEffect, useState } from "react";
-import { sortedByCreatedAt } from "@utils/tools";
-import HistoryRow from "@components/HistoryRow";
+import { sortedByCreatedAt } from "@/utils/tools";
+import HistoryRow from "@/components/HistoryRow";
 import { toast } from "sonner";
-import { restoreHistory, deleteHistory } from "@utils/services";
-import { useLoadingStore } from "@store/index";
+import { restoreHistory, deleteHistory } from "@/utils/services";
+import { useLoadingStore } from "@/store/index";
 
 export default function Trash() {
   document.title = "History Trash";

@@ -1,5 +1,5 @@
 import { CostHistoryType } from "@/types";
-import { get40Percent } from "@utils/services";
+import { get40Percent } from "@/utils/services";
 import { Icon } from "@iconify/react";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";

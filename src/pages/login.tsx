@@ -1,12 +1,12 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { SubmitButton } from "@components/SubmitButton";
-import { supabase } from "@db/supabase";
-import { useUserStore } from "@store/index";
+import { SubmitButton } from "@/components/SubmitButton";
+import { supabase } from "@/db/supabase";
+import { useUserStore } from "@/store/index";
 import { toast } from "sonner";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFields, loginSchema } from "../types";
-import { ErrorMessage } from "@components/ErrorMessage";
+import { ErrorMessage } from "@/components/ErrorMessage";
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 

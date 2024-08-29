@@ -1,8 +1,8 @@
-import GlobalLoader from "@components/GlobalLoader";
-import Footer from "@components/Footer";
+import GlobalLoader from "@/components/GlobalLoader";
+import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import { Outlet, useNavigation } from "react-router-dom";
-import Loader from "@components/Loader";
+import Loader from "@/components/Loader";
 
 export function Layout() {
   const { state } = useNavigation();

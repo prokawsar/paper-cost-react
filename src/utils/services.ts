@@ -1,4 +1,4 @@
-import { supabase } from "@db/supabase";
+import { supabase } from "@/db/supabase";
 import { PAPER_FIXED } from "./constants";
 import { CostHistoryType, Paper } from "@/types/index";
 

@@ -1,11 +1,11 @@
-import Input from "@components/Input";
-import Result from "@components/Result";
+import Input from "@/components/Input";
+import Result from "@/components/Result";
 import { CostHistoryType, Paper } from "@/types/index";
-import { calculateCost, getHistory } from "@utils/services";
+import { calculateCost, getHistory } from "@/utils/services";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useLoadingStore } from "@store/index";
+import { useLoadingStore } from "@/store/index";
 
 export default function HistoryDetail() {
   const params = useParams();

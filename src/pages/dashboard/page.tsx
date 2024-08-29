@@ -1,12 +1,13 @@
-import Button from "@components/Button";
-import { MAX_PAPER, paperFields } from "@utils/constants";
-import { makeid } from "@utils/tools";
-import Result from "@components/Result";
+import Button from "@/components/Button";
+import { MAX_PAPER, paperFields } from "@/utils/constants";
+import { makeid } from "@/utils/tools";
+import Result from "@/components/Result";
 import { useState } from "react";
-import PaperItem from "@components/PaperItem";
+import PaperItem from "@/components/PaperItem";
 import { Paper } from "@/types/index";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { calculateCost } from "@utils/services";
+import { calculateCost } from "@/utils/services";
+import { useUserStore } from "@/store";
 
 export default function Dashboard() {
   document.title = "Paper Cost";
@@ -14,6 +15,7 @@ export default function Dashboard() {
   const [finalPrice, setFinalPrice] = useState(0);
   const [customerName, setCustomerName] = useState("");
   const [showSaveHistory, setShowSaveHistory] = useState(false);
+  const { userData } = useUserStore();
   const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
     new Map()
   );

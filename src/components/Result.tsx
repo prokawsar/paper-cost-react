@@ -1,4 +1,4 @@
-import { get40Percent } from "@utils/services";
+import { get40Percent } from "@/utils/services";
 
 export default function Result({ total }: { total: number }) {
   return (

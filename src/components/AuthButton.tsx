@@ -1,6 +1,6 @@
-import { supabase } from "@db/supabase";
+import { supabase } from "@/db/supabase";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useLoadingStore, useUserStore } from "@store/index";
+import { useLoadingStore, useUserStore } from "@/store/index";
 
 export default function AuthButton() {
   const { pathname } = useLocation();
