@@ -5,12 +5,13 @@ import { sortedByCreatedAt } from "@/utils/tools";
 import HistoryRow from "@/components/HistoryRow";
 import { toast } from "sonner";
 import { restoreHistory, deleteHistory } from "@/utils/services";
-import { useLoadingStore } from "@/store/index";
+import { useLoadingStore, useUserStore } from "@/store/index";
 
 export default function Trash() {
   document.title = "History Trash";
 
   const { setIsLoading } = useLoadingStore();
+  const { userData } = useUserStore();
 
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
 
@@ -19,6 +20,7 @@ export default function Trash() {
     const { data } = await supabase
       .from("history")
       .select()
+      .eq("user", userData?.id)
       .not("deleted_at", "is", null);
     setHistoryData(data);
     setIsLoading(false);

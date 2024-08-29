@@ -7,11 +7,12 @@ import { sortedByCreatedAt } from "@/utils/tools";
 import HistoryRow from "@/components/HistoryRow";
 import { softDeleteHistory } from "@/utils/services";
 import { toast } from "sonner";
-import { useLoadingStore } from "@/store/index";
+import { useLoadingStore, useUserStore } from "@/store/index";
 
 export default function History() {
   document.title = "History";
   const { setIsLoading } = useLoadingStore();
+  const { userData } = useUserStore();
   const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
 
   const getHistory = async () => {
@@ -19,6 +20,7 @@ export default function History() {
     const { data } = await supabase
       .from("history")
       .select()
+      .eq("user", userData?.id)
       .is("deleted_at", null);
     setHistoryData(data);
     setIsLoading(false);

@@ -64,7 +64,7 @@ export default function Footer() {
       )}
       {showAbout && (
         <Modal onClickBackdrop={() => setAbout(false)}>
-          <About />
+          <About user={userData} />
         </Modal>
       )}
     </footer>
