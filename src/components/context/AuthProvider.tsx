@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/db/supabase";
-import { User, useUserStore } from "@/store/index";
+import { User } from "@supabase/supabase-js";
+import { useUserStore } from "@/store/index";
 import { createContext, useEffect } from "react";
 import { PROTECTED_ROUTES, UNAUTHENTICATE_ROUTES } from "@/utils/constants";
 
