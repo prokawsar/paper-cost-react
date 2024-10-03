@@ -24,7 +24,7 @@ export default function HistoryRow({
         to={`/history/${cost.id}`}
         className="flex flex-row items-center pl-1 justify-between w-full"
       >
-        <p className="truncate w-[40%]">{cost.name}</p>
+        {cost.name && <p className="truncate w-[40%]">{cost.name}</p>}
         <p className="text-gray-500 text-sm truncate">
           {cost.final_price.toFixed(2)}
           <span className=" text-teal-600">
