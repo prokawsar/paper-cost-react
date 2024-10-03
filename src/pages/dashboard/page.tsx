@@ -3,11 +3,13 @@ import { MAX_PAPER, paperFields } from "@/utils/constants";
 import { makeid } from "@/utils/tools";
 import Result from "@/components/Result";
 import { useState } from "react";
-import PaperItem from "@/components/PaperItem";
 import { Paper } from "@/types/index";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { fields as paperFieldsName, placeholders } from "@/utils/constants";
+
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { calculateCost } from "@/utils/services";
 import { useUserStore } from "@/store";
+import { Icon } from "@iconify/react";
 
 export default function Dashboard() {
   document.title = "Paper Cost";
@@ -15,47 +17,58 @@ export default function Dashboard() {
   const [finalPrice, setFinalPrice] = useState(0);
   const [customerName, setCustomerName] = useState("");
   const [showSaveHistory, setShowSaveHistory] = useState(false);
-  const { userData } = useUserStore();
   const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
     new Map()
   );
-  const [paperCount, setPaperCount] = useState([
-    { ...paperFields, id: makeid(5) },
-  ]);
 
-  const { handleSubmit, register } = useForm<Paper[]>();
+  const { handleSubmit, control, register, reset } = useForm<{
+    papers: Paper[];
+  }>({
+    defaultValues: { papers: [{ ...paperFields, id: makeid(5) }] },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "papers",
+  });
 
   const addPaper = () => {
-    setPaperCount([...paperCount, { ...paperFields, id: makeid(5) }]);
+    append({ ...paperFields, id: makeid(5) });
+    setShowSaveHistory(false);
   };
 
-  const handleRemovePaper = async (idx: string) => {
-    const filteredPapers = paperCount.filter((field) => field.id != idx);
-    setPaperCount(filteredPapers);
-
-    if (perPaperResult.has(idx)) perPaperResult.delete(idx);
-  };
+  // const handleRemovePaper = async (idx: string, index: number) => {
+  //   remove(index);
+  //   if (perPaperResult.has(idx)) perPaperResult.delete(idx);
+  // };
 
   const clearAll = () => {
-    setPaperCount([{ ...paperFields, id: makeid(5) }]);
+    reset({ papers: [{ ...paperFields, id: makeid(5) }] });
     setFinalPrice(0);
     setCustomerName("");
+    setShowSaveHistory(false);
     perPaperResult.clear();
   };
 
-  const calculatePaperCost = () => {
-    console.log(paperCount);
-    return;
+  const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
+    // TODO: Fix Map integration
+    // perPaperResult.clear();
 
-    perPaperResult.clear();
-    setFinalPrice(0);
-    paperCount.forEach((paper) => {
+    const { papers } = data;
+
+    let total = 0;
+    const results = new Map();
+
+    papers.forEach((paper) => {
       const totalPerPaper = calculateCost(paper);
 
-      perPaperResult.set(paper.id, totalPerPaper);
-      setFinalPrice(finalPrice + totalPerPaper);
+      results.set(paper.id, totalPerPaper);
+      total += total + totalPerPaper;
     });
-    // perPaperResult = perPaperResult
+
+    setFinalPrice(total);
+    setShowSaveHistory(true);
+    setPerPaperResult(results);
   };
 
   return (
@@ -79,16 +92,44 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
-          {paperCount.map((paper: Paper, index) => {
+          {fields.map((paper: Paper, index) => {
             return (
-              <PaperItem
+              <div
                 key={paper.id}
-                index={index}
-                paper={paper}
-                totalPaper={paperCount.length}
-                perPaperResult={perPaperResult}
-                removePaper={(id) => handleRemovePaper(id)}
-              />
+                className="flex flex-row items-center justify-between rounded"
+              >
+                <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
+                  <button
+                    onClick={() => remove(index)}
+                    className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
+                  >
+                    <Icon icon="ph:trash-light" width="16px" />
+                  </button>
+
+                  {paperFieldsName.map((fieldName, paperIndex) => {
+                    return (
+                      <input
+                        className={`border border-gray-400 w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
+                        type="number"
+                        key={paperIndex}
+                        placeholder={placeholders[fieldName]}
+                        {...register(`papers.${index}.${fieldName}`)}
+                      />
+                    );
+                  })}
+                </div>
+                <div className="flex flex-grow justify-center px-1">
+                  <p
+                    className={`pr-[2px] ${
+                      perPaperResult.get(paper.id)
+                        ? "font-semibold"
+                        : "font-light text-gray-400"
+                    }`}
+                  >
+                    = {perPaperResult.get(paper.id)?.toFixed(2) || "total"}
+                  </p>
+                </div>
+              </div>
             );
           })}
         </div>
@@ -98,7 +139,7 @@ export default function Dashboard() {
             <Button
               classNames="text-sm"
               onClick={addPaper}
-              disabled={paperCount.length == MAX_PAPER}
+              disabled={fields.length == MAX_PAPER}
             >
               Add paper
             </Button>
@@ -112,7 +153,9 @@ export default function Dashboard() {
               </button>
             )}
             {/* TODO: Set disabled state */}
-            <Button onClick={calculatePaperCost}>Calculate </Button>
+            <Button onClick={handleSubmit(calculatePaperCost)}>
+              Calculate
+            </Button>
           </div>
 
           {finalPrice > 0 && (
