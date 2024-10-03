@@ -20,8 +20,8 @@ export type CostHistoryType = {
 export const loginSchema = z.object({
   email: z.string().email(),
   password: z
-    .string({ message: "Password is required" })
-    .min(8, { message: "Password must contain at least 8 characters" })
+    .string()
+    .min(1, { message: "Password is required" })
     .max(15, { message: "Password maximum length is 15" }),
 });
 
@@ -31,7 +31,7 @@ export const signupSchema = z
   .object({
     email: z.string().email(),
     password: z
-      .string({ message: "Password is required" })
+      .string()
       .min(8, { message: "Password must contain at least 8 characters" })
       .max(15, { message: "Password maximum length is 15" })
       .regex(
