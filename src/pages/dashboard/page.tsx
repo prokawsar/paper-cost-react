@@ -7,9 +7,9 @@ import { Paper } from "@/types/index";
 import { fields as paperFieldsName, placeholders } from "@/utils/constants";
 
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { calculateCost } from "@/utils/services";
-import { useUserStore } from "@/store";
+import { addHistory, calculateCost } from "@/utils/services";
 import { Icon } from "@iconify/react";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   document.title = "Paper Cost";
@@ -63,12 +63,34 @@ export default function Dashboard() {
       const totalPerPaper = calculateCost(paper);
 
       results.set(paper.id, totalPerPaper);
-      total += total + totalPerPaper;
+      total += totalPerPaper;
+
+      setPerPaperResult((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(paper.id, total);
+        return newMap;
+      });
     });
 
     setFinalPrice(total);
     setShowSaveHistory(true);
-    setPerPaperResult(results);
+  };
+
+  const saveHistory = async () => {
+    console.log(fields);
+    // const response = await addHistory({
+    // 		name: customerName,
+    // 		final_price: finalPrice,
+    // 		papers: papers,
+    // 		user: 'dd'
+    // 	})
+
+    // 	if (response && response?.message.indexOf('TypeError') != -1) {
+    // 		toast.error('Failed to save history, you are offline!')
+    // 		return
+    // 	}
+    // totalHistoryStore = await getTotalHistory()
+    toast.success("Cost details saved successfully");
   };
 
   return (
@@ -85,7 +107,10 @@ export default function Dashboard() {
             className="border-b py-[2px] border-dashed w-full h-full px-2 focus:outline-none focus:border-teal-500"
           />
           {showSaveHistory && (
-            <Button classNames="text-sm animate-pulse !w-[30%] !px-1">
+            <Button
+              onClick={saveHistory}
+              classNames="text-sm animate-pulse !w-[30%] !px-1"
+            >
               Save cost
             </Button>
           )}

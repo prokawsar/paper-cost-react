@@ -10,11 +10,12 @@ export type Paper = {
 };
 
 export type CostHistoryType = {
-  id: string;
+  id?: string;
   name: string;
   papers: Paper[];
   final_price: number;
   created_at?: string;
+  user: string;
 };
 
 export const loginSchema = z.object({
