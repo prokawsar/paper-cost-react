@@ -8,6 +8,7 @@ import { SignupFields, signupSchema } from '../types'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
+import { Button } from 'antd'
 
 export default function Signup() {
   const navigate = useNavigate()
@@ -108,14 +109,14 @@ export default function Signup() {
             <ErrorMessage>{errors.confirm_password.message}</ErrorMessage>
           )}
         </div>
-        <SubmitButton
-          disabled={isSubmitting}
-          isSubmit={isSubmitting}
-          className="mb-2 rounded-md border border-slate-400 px-4 py-2 text-slate-800 disabled:cursor-not-allowed"
-          pendingText="Signing Up..."
+        <Button
+          className="py-5"
+          type="default"
+          htmlType="submit"
+          loading={isSubmitting}
         >
           Sign Up
-        </SubmitButton>
+        </Button>
         <p className="text-center">
           Already have account?{' '}
           <Link className=" text-sky-600" to="/login">
