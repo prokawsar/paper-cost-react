@@ -121,6 +121,7 @@ export default function Dashboard() {
     }
 
     const historyData: CostHistoryType = {
+      id: '', // it will not pass to supabase, see addHistory()
       name: productName,
       final_price: finalPrice,
       papers: papers,
