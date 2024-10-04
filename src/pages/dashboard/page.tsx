@@ -47,11 +47,6 @@ export default function Dashboard() {
     setShowSaveHistory(false)
   }
 
-  // const handleRemovePaper = async (idx: string, index: number) => {
-  //   remove(index);
-  //   if (perPaperResult.has(idx)) perPaperResult.delete(idx);
-  // };
-
   const clearAll = () => {
     reset({ papers: [{ ...paperFields, id: makeid(5) }] })
     setFinalPrice(0)
@@ -60,16 +55,33 @@ export default function Dashboard() {
     perPaperResult.clear()
   }
 
+  const checkEmptyFields = (data: { papers: Paper[] }) => {
+    const fieldNames = Object.keys(data.papers[0]).filter((key) => key !== 'id')
+
+    let emptyState = false
+    data.papers.forEach((paper, index) => {
+      fieldNames.forEach((fieldName) => {
+        if (paper[fieldName as keyof Paper] === '') {
+          emptyState = true
+          setError(`papers.${index}.${fieldName}`, {
+            type: 'manual',
+            message: 'This field is required',
+          })
+        }
+      })
+    })
+    return emptyState
+  }
+
   const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
     // TODO: Fix Map integration
     // perPaperResult.clear();
 
-    // Manual validation check
-    // if (hasEmptyFields) {
-    //   console.log('Manual validation failed')
-    //   toast.error('Please fill in all required fields')
-    //   return
-    // }
+    const hasEmptyFields = checkEmptyFields(data)
+    if (hasEmptyFields) {
+      toast.warning('Please fill in all required fields')
+      return
+    }
 
     const { papers } = data
     const results = new Map<string, number>()
@@ -96,7 +108,7 @@ export default function Dashboard() {
 
   const saveHistory = async () => {
     if (!productName.trim()) {
-      toast.error('Please enter a product name')
+      toast.warning('Please enter a product name')
       return
     }
 
@@ -219,7 +231,6 @@ export default function Dashboard() {
                 Clear
               </button>
             )}
-            {/* TODO: Set disabled state */}
             <Button onClick={handleSubmit(calculatePaperCost)}>
               {finalPrice > 0 ? 'Recalculate' : 'Calculate'}
             </Button>

@@ -21,10 +21,12 @@ export function Layout() {
       </div>
       <GlobalLoader />
       <Toaster
-        className="!py-0"
+        toastOptions={{
+          className: 'py-2.5 mb-7',
+          closeButton: true,
+        }}
+        position="bottom-center"
         richColors
-        position="bottom-right"
-        closeButton
       />
       <Footer />
     </main>
