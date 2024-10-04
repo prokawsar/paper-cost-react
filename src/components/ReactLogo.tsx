@@ -19,5 +19,5 @@ export default function ReactLogo() {
         fill="#00d8ff"
       />
     </svg>
-  );
+  )
 }

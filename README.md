@@ -4,15 +4,15 @@ This project is specifically designed with a **MOBILE**-first approach, with the
 
 ## Features and Functionalities
 
-```bash
--> Email/Password based authentication system
--> Dynamic paper layer adding (Maximum 10 paper)
--> Auto focus next field on press 'Enter'
--> Calculate the price on press 'Enter' from last input field
--> Price history saved in Supabase
--> History trash for later recovery
 
-```
+- [x] Email/Password based authentication system
+- [x] Dynamic paper layer adding (Maximum 10 paper)
+- [x] Price history saved in Supabase
+- [x] History trash for later recovery
+- [x] Empty field validation
+- [ ] Auto focus next field on press 'Enter'
+- [ ] Calculate the price on press 'Enter' from last input field
+
 
 ## Tech Stack
 
@@ -40,7 +40,6 @@ test@gmail.com
 // Password
 111111
 ```
-
 
 1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new).
 

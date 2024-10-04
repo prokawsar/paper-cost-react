@@ -1,30 +1,30 @@
-import Input from "@/components/Input";
-import Result from "@/components/Result";
-import { CostHistoryType, Paper } from "@/types/index";
-import { calculateCost, getHistory } from "@/utils/services";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useLoadingStore } from "@/store/index";
+import Input from '@/components/Input'
+import Result from '@/components/Result'
+import { CostHistoryType, Paper } from '@/types/index'
+import { calculateCost, getHistory } from '@/utils/services'
+import dayjs from 'dayjs'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import { useLoadingStore } from '@/store/index'
 
 export default function HistoryDetail() {
-  const params = useParams();
-  const [history, setHistory] = useState<CostHistoryType | null>(null);
-  const { setIsLoading } = useLoadingStore();
+  const params = useParams()
+  const [history, setHistory] = useState<CostHistoryType | null>(null)
+  const { setIsLoading } = useLoadingStore()
 
   const fetchHistory = async () => {
     if (params.id) {
-      setIsLoading(true);
-      const data = await getHistory(params.id);
+      setIsLoading(true)
+      const data = await getHistory(params.id)
       if (data) {
-        setHistory(data[0]);
-        setIsLoading(false);
+        setHistory(data[0])
+        setIsLoading(false)
       }
     }
-  };
+  }
   useEffect(() => {
-    fetchHistory();
-  }, []);
+    fetchHistory()
+  }, [])
 
   return (
     <section className="max-w-6xl mx-auto flex w-full h-full max-h-[90%] flex-col gap-4 px-4 pt-5">
@@ -36,10 +36,10 @@ export default function HistoryDetail() {
         <>
           <div className="flex flex-row justify-between px-1 gap-2 items-center">
             <div className="flex flex-row gap-1 justify-between flex-grow">
-              <p className="truncate max-w-44">{history.name || ""}</p>
+              <p className="truncate max-w-44">{history.name || ''}</p>
             </div>
             <h1 className="text-sm text-center flex text-gray-500">
-              {dayjs(history.created_at).format("DD-MM-YYYY hh:mmA")}
+              {dayjs(history.created_at).format('DD-MM-YYYY hh:mmA')}
             </h1>
           </div>
 
@@ -64,7 +64,7 @@ export default function HistoryDetail() {
                       </div>
                     </div>
                   </div>
-                );
+                )
               })}
 
               <div className="font-bold text-lg mt-2 flex w-full">
@@ -75,5 +75,5 @@ export default function HistoryDetail() {
         </>
       )}
     </section>
-  );
+  )
 }

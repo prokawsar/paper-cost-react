@@ -1,11 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react'
 
 export function ErrorMessage({
   children,
-  className = "",
+  className = '',
 }: {
-  children: ReactNode;
-  className?: string;
+  children: ReactNode
+  className?: string
 }) {
-  return <p className={`text-red-500 text-xs ${className}`}>{children}</p>;
+  return <p className={`text-red-500 text-xs ${className}`}>{children}</p>
 }

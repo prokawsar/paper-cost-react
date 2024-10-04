@@ -1,9 +1,9 @@
-import { type ComponentProps } from "react";
+import { type ComponentProps } from 'react'
 
-type Props = ComponentProps<"button"> & {
-  pendingText?: string;
-  isSubmit?: boolean;
-};
+type Props = ComponentProps<'button'> & {
+  pendingText?: string
+  isSubmit?: boolean
+}
 
 export function SubmitButton({
   children,
@@ -11,5 +11,5 @@ export function SubmitButton({
   isSubmit,
   ...props
 }: Props) {
-  return <button {...props}>{isSubmit ? pendingText : children}</button>;
+  return <button {...props}>{isSubmit ? pendingText : children}</button>
 }

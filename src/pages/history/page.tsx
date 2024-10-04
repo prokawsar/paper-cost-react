@@ -1,41 +1,41 @@
-import { supabase } from "@/db/supabase";
-import { CostHistoryType } from "@/types";
-import { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
-import { sortedByCreatedAt } from "@/utils/tools";
-import HistoryRow from "@/components/HistoryRow";
-import { softDeleteHistory } from "@/utils/services";
-import { toast } from "sonner";
-import { useLoadingStore, useUserStore } from "@/store/index";
+import { supabase } from '@/db/supabase'
+import { CostHistoryType } from '@/types'
+import { useEffect, useState } from 'react'
+import { Icon } from '@iconify/react'
+import { Link } from 'react-router-dom'
+import { sortedByCreatedAt } from '@/utils/tools'
+import HistoryRow from '@/components/HistoryRow'
+import { softDeleteHistory } from '@/utils/services'
+import { toast } from 'sonner'
+import { useLoadingStore, useUserStore } from '@/store/index'
 
 export default function History() {
-  document.title = "History";
-  const { setIsLoading } = useLoadingStore();
-  const { userData } = useUserStore();
-  const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
+  document.title = 'History'
+  const { setIsLoading } = useLoadingStore()
+  const { userData } = useUserStore()
+  const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([])
 
   const getHistory = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     const { data } = await supabase
-      .from("history")
+      .from('history')
       .select()
-      .eq("user", userData?.id)
-      .is("deleted_at", null);
-    setHistoryData(data);
-    setIsLoading(false);
-  };
+      .eq('user', userData?.id)
+      .is('deleted_at', null)
+    setHistoryData(data)
+    setIsLoading(false)
+  }
   useEffect(() => {
-    getHistory();
-  }, []);
+    getHistory()
+  }, [])
 
   const handleDelete = async (id: string) => {
-    setIsLoading(true);
-    await softDeleteHistory(id);
-    toast.message("History moved to trash!");
-    await getHistory();
-    setIsLoading(false);
-  };
+    setIsLoading(true)
+    await softDeleteHistory(id)
+    toast.message('History moved to trash!')
+    await getHistory()
+    setIsLoading(false)
+  }
 
   return (
     <section className="max-w-6xl mx-auto flex w-full h-full max-h-[90%] flex-col gap-4 px-4 pt-5">
@@ -72,5 +72,5 @@ export default function History() {
         </div>
       </div>
     </section>
-  );
+  )
 }

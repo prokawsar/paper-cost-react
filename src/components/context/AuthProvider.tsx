@@ -1,45 +1,45 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { supabase } from "@/db/supabase";
-import { User } from "@supabase/supabase-js";
-import { useUserStore } from "@/store/index";
-import { createContext, useEffect } from "react";
-import { PROTECTED_ROUTES, UNAUTHENTICATE_ROUTES } from "@/utils/constants";
+import { useLocation, useNavigate } from 'react-router-dom'
+import { supabase } from '@/db/supabase'
+import { User } from '@supabase/supabase-js'
+import { useUserStore } from '@/store/index'
+import { createContext, useEffect } from 'react'
+import { PROTECTED_ROUTES, UNAUTHENTICATE_ROUTES } from '@/utils/constants'
 
 export const AuthContext = createContext<{ userData: User | null }>({
   userData: null,
-});
+})
 
 export default function AuthProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const { userData, setUser } = useUserStore();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { userData, setUser } = useUserStore()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     if (!userData) {
-      const res = supabase.auth.getUser();
+      const res = supabase.auth.getUser()
       res.then((response) => {
         if (!response.data.user) {
           if (PROTECTED_ROUTES.includes(location.pathname)) {
-            navigate("/login");
+            navigate('/login')
           }
         } else {
           const { id, email } = response.data.user,
-            user = { id, email };
-          setUser(user);
+            user = { id, email }
+          setUser(user)
         }
-      });
+      })
     } else {
       if (UNAUTHENTICATE_ROUTES.includes(location.pathname)) {
-        navigate("/dashboard");
+        navigate('/dashboard')
       }
     }
-  }, [navigate, location, userData, setUser]);
+  }, [navigate, location, userData, setUser])
 
   return (
     <AuthContext.Provider value={{ userData }}>{children}</AuthContext.Provider>
-  );
+  )
 }

@@ -1,26 +1,24 @@
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Login from "./pages/login";
-import { Layout } from "./pages/layout";
-import Dashboard from "./pages/dashboard/page";
-import History from "./pages/history/page";
-import HistoryDetail from "./pages/history/id/page";
-import HistoryTrash from "./pages/history/trash/page";
-import AuthProvider from "./components/context/AuthProvider";
-import Signup from "./pages/signup";
-import Error from "./pages/error";
-import { StrictMode } from "react";
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import App from './App'
+import reportWebVitals from './reportWebVitals'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Login from './pages/login'
+import { Layout } from './pages/layout'
+import Dashboard from './pages/dashboard/page'
+import History from './pages/history/page'
+import HistoryDetail from './pages/history/id/page'
+import HistoryTrash from './pages/history/trash/page'
+import AuthProvider from './components/context/AuthProvider'
+import Signup from './pages/signup'
+import Error from './pages/error'
+import { StrictMode } from 'react'
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     errorElement: <Error />,
     element: <Layout />,
     children: [
@@ -33,7 +31,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/login",
+        path: '/login',
         element: (
           <AuthProvider>
             <Login />
@@ -41,7 +39,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/signup",
+        path: '/signup',
         element: (
           <AuthProvider>
             <Signup />
@@ -49,7 +47,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/history",
+        path: '/history',
         element: (
           <AuthProvider>
             <History />
@@ -57,7 +55,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/history/trash",
+        path: '/history/trash',
         element: (
           <AuthProvider>
             <HistoryTrash />
@@ -65,7 +63,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/history/:id",
+        path: '/history/:id',
         element: (
           <AuthProvider>
             <HistoryDetail />
@@ -73,7 +71,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/dashboard",
+        path: '/dashboard',
         element: (
           <AuthProvider>
             <Dashboard />
@@ -82,15 +80,15 @@ const router = createBrowserRouter([
       },
     ],
   },
-]);
+])
 
 root.render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
-);
+  </StrictMode>,
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals()

@@ -1,4 +1,4 @@
-import { User } from "@supabase/supabase-js";
+import { User } from '@supabase/supabase-js'
 
 export default function About({ user }: { user: User | null }) {
   return (
@@ -16,5 +16,5 @@ export default function About({ user }: { user: User | null }) {
       </div>
       <p className="mt-10 text-slate-500 text-xs">Version: </p>
     </div>
-  );
+  )
 }

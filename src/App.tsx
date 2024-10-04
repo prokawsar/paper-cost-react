@@ -1,8 +1,8 @@
-import ReactLogo from "@/components/ReactLogo";
-import SupabaseLogo from "@/components/SupabaseLogo";
+import ReactLogo from '@/components/ReactLogo'
+import SupabaseLogo from '@/components/SupabaseLogo'
 
 function App() {
-  document.title = "Paper Cost";
+  document.title = 'Paper Cost'
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <div className="animate-in flex max-w-4xl flex-1 flex-col px-3">
@@ -21,7 +21,7 @@ function App() {
         </main>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

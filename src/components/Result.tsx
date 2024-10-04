@@ -1,4 +1,4 @@
-import { get40Percent } from "@/utils/services";
+import { get40Percent } from '@/utils/services'
 
 export default function Result({ total }: { total: number }) {
   return (
@@ -12,5 +12,5 @@ export default function Result({ total }: { total: number }) {
         <p>{(total + get40Percent(total)).toFixed(2)}</p>
       </div>
     </div>
-  );
+  )
 }
