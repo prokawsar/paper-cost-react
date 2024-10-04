@@ -5,12 +5,12 @@ This project is specifically designed with a **MOBILE**-first approach, with the
 ## Features and Functionalities
 
 ```bash
--> Email/Password based authentication system
--> Dynamic paper layer adding (Maximum 10 paper)
--> Auto focus next field on press 'Enter'
--> Calculate the price on press 'Enter' from last input field
--> Price history saved in Supabase
--> History trash for later recovery
+- [x] Email/Password based authentication system
+- [x] Dynamic paper layer adding (Maximum 10 paper)
+- [] Auto focus next field on press 'Enter'
+- [] Calculate the price on press 'Enter' from last input field
+- [x] Price history saved in Supabase
+- [x] History trash for later recovery
 
 ```
 
