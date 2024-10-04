@@ -145,7 +145,11 @@ export default function Dashboard() {
               >
                 <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
                   <button
-                    onClick={() => remove(index)}
+                    disabled={fields.length === 1}
+                    onClick={() => {
+                      if (fields.length === 1) return
+                      remove(index)
+                    }}
                     className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
                   >
                     <Icon icon="ph:trash-light" width="16px" />
