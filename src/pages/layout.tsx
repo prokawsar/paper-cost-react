@@ -1,11 +1,11 @@
-import GlobalLoader from "@/components/GlobalLoader";
-import Footer from "@/components/Footer";
-import { Toaster } from "sonner";
-import { Outlet, useNavigation } from "react-router-dom";
-import Loader from "@/components/Loader";
+import GlobalLoader from '@/components/GlobalLoader'
+import Footer from '@/components/Footer'
+import { Toaster } from 'sonner'
+import { Outlet, useNavigation } from 'react-router-dom'
+import Loader from '@/components/Loader'
 
 export function Layout() {
-  const { state } = useNavigation();
+  const { state } = useNavigation()
 
   return (
     <main className="h-[100svh] flex flex-col justify-between">
@@ -17,11 +17,11 @@ export function Layout() {
           <div className="bg-gradient-to-r from-transparent via-orange-800/40 to-transparent p-[1px]" />
         </nav>
         {/* {children} */}
-        {state == "loading" ? <Loader /> : <Outlet />}
+        {state == 'loading' ? <Loader /> : <Outlet />}
       </div>
       <GlobalLoader />
       <Toaster richColors position="bottom-right" closeButton />
       <Footer />
     </main>
-  );
+  )
 }

@@ -1,8 +1,8 @@
-import { Icon } from "@iconify/react";
-import { useLoadingStore } from "@/store/index";
+import { Icon } from '@iconify/react'
+import { useLoadingStore } from '@/store/index'
 
 export default function GlobalLoader() {
-  const { isLoading } = useLoadingStore();
+  const { isLoading } = useLoadingStore()
 
   return (
     <>
@@ -11,8 +11,8 @@ export default function GlobalLoader() {
           <Icon icon="ei:spinner-3" width="44px" className="animate-spin" />
         </div>
       ) : (
-        ""
+        ''
       )}
     </>
-  );
+  )
 }

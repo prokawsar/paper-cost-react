@@ -1,8 +1,8 @@
-import { Paper } from "@/types/index";
-import { fields, placeholders } from "@/utils/constants";
-import { Icon } from "@iconify/react";
-import Input from "./Input";
-import { Controller, UseFormRegister } from "react-hook-form";
+import { Paper } from '@/types/index'
+import { fields, placeholders } from '@/utils/constants'
+import { Icon } from '@iconify/react'
+import Input from './Input'
+import { Controller, UseFormRegister } from 'react-hook-form'
 
 export default function PaperItem({
   paper,
@@ -12,12 +12,12 @@ export default function PaperItem({
   removePaper,
   register,
 }: {
-  paper: Paper;
-  totalPaper: number;
-  index: number;
-  perPaperResult: Map<string, number>;
-  removePaper: (id: string) => void;
-  register?: UseFormRegister<Paper[]>;
+  paper: Paper
+  totalPaper: number
+  index: number
+  perPaperResult: Map<string, number>
+  removePaper: (id: string) => void
+  register?: UseFormRegister<Paper[]>
 }) {
   return (
     <div
@@ -52,7 +52,7 @@ export default function PaperItem({
               key={index}
               placeholder={placeholders[fieldName]}
             />
-          );
+          )
         })}
       </div>
       <div className="flex flex-grow justify-center px-1">
@@ -60,13 +60,13 @@ export default function PaperItem({
           className={`pr-[2px]
             ${
               perPaperResult.get(paper.id)
-                ? "font-semibold"
-                : "font-light text-gray-400"
+                ? 'font-semibold'
+                : 'font-light text-gray-400'
             }`}
         >
-          = {perPaperResult.get(paper.id)?.toFixed(2) || "total"}
+          = {perPaperResult.get(paper.id)?.toFixed(2) || 'total'}
         </p>
       </div>
     </div>
-  );
+  )
 }

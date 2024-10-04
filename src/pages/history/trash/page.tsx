@@ -1,49 +1,49 @@
-import { supabase } from "@/db/supabase";
-import { CostHistoryType } from "@/types";
-import { useEffect, useState } from "react";
-import { sortedByCreatedAt } from "@/utils/tools";
-import HistoryRow from "@/components/HistoryRow";
-import { toast } from "sonner";
-import { restoreHistory, deleteHistory } from "@/utils/services";
-import { useLoadingStore, useUserStore } from "@/store/index";
+import { supabase } from '@/db/supabase'
+import { CostHistoryType } from '@/types'
+import { useEffect, useState } from 'react'
+import { sortedByCreatedAt } from '@/utils/tools'
+import HistoryRow from '@/components/HistoryRow'
+import { toast } from 'sonner'
+import { restoreHistory, deleteHistory } from '@/utils/services'
+import { useLoadingStore, useUserStore } from '@/store/index'
 
 export default function Trash() {
-  document.title = "History Trash";
+  document.title = 'History Trash'
 
-  const { setIsLoading } = useLoadingStore();
-  const { userData } = useUserStore();
+  const { setIsLoading } = useLoadingStore()
+  const { userData } = useUserStore()
 
-  const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([]);
+  const [historyData, setHistoryData] = useState<CostHistoryType[] | null>([])
 
   const getHistory = async () => {
-    setIsLoading(true);
+    setIsLoading(true)
     const { data } = await supabase
-      .from("history")
+      .from('history')
       .select()
-      .eq("user", userData?.id)
-      .not("deleted_at", "is", null);
-    setHistoryData(data);
-    setIsLoading(false);
-  };
+      .eq('user', userData?.id)
+      .not('deleted_at', 'is', null)
+    setHistoryData(data)
+    setIsLoading(false)
+  }
   useEffect(() => {
-    getHistory();
-  }, []);
+    getHistory()
+  }, [])
 
   const handleDelete = async (id: string) => {
-    setIsLoading(true);
-    await deleteHistory(id);
-    toast.success("History deleted successfully");
-    await getHistory();
-    setIsLoading(false);
-  };
+    setIsLoading(true)
+    await deleteHistory(id)
+    toast.success('History deleted successfully')
+    await getHistory()
+    setIsLoading(false)
+  }
 
   const handleRestore = async (id: string) => {
-    setIsLoading(true);
-    await restoreHistory(id);
-    toast.success("History restored successfully");
-    await getHistory();
-    setIsLoading(false);
-  };
+    setIsLoading(true)
+    await restoreHistory(id)
+    toast.success('History restored successfully')
+    await getHistory()
+    setIsLoading(false)
+  }
 
   return (
     <section className="max-w-6xl mx-auto flex w-full h-full max-h-[90%] flex-col gap-4 px-4 py-5">
@@ -75,5 +75,5 @@ export default function Trash() {
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -1,12 +1,12 @@
-import { ReactNode, ButtonHTMLAttributes } from "react";
+import { ReactNode, ButtonHTMLAttributes } from 'react'
 
 export default function Button({
   classNames,
   children,
   ...props
 }: {
-  classNames?: string;
-  children: ReactNode;
+  classNames?: string
+  children: ReactNode
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
@@ -15,5 +15,5 @@ export default function Button({
     >
       {children}
     </button>
-  );
+  )
 }

@@ -41,7 +41,6 @@ test@gmail.com
 111111
 ```
 
-
 1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new).
 
    For using existing created database, secrets for `.env`.

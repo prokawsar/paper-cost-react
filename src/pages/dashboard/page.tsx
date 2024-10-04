@@ -1,41 +1,41 @@
-import Button from "@/components/Button";
-import { MAX_PAPER, paperFields } from "@/utils/constants";
-import { makeid } from "@/utils/tools";
-import Result from "@/components/Result";
-import { useState } from "react";
-import { Paper } from "@/types/index";
-import { fields as paperFieldsName, placeholders } from "@/utils/constants";
+import Button from '@/components/Button'
+import { MAX_PAPER, paperFields } from '@/utils/constants'
+import { makeid } from '@/utils/tools'
+import Result from '@/components/Result'
+import { useState } from 'react'
+import { Paper } from '@/types/index'
+import { fields as paperFieldsName, placeholders } from '@/utils/constants'
 
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { addHistory, calculateCost } from "@/utils/services";
-import { Icon } from "@iconify/react";
-import { toast } from "sonner";
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
+import { addHistory, calculateCost } from '@/utils/services'
+import { Icon } from '@iconify/react'
+import { toast } from 'sonner'
 
 export default function Dashboard() {
-  document.title = "Paper Cost";
+  document.title = 'Paper Cost'
 
-  const [finalPrice, setFinalPrice] = useState(0);
-  const [customerName, setCustomerName] = useState("");
-  const [showSaveHistory, setShowSaveHistory] = useState(false);
+  const [finalPrice, setFinalPrice] = useState(0)
+  const [customerName, setCustomerName] = useState('')
+  const [showSaveHistory, setShowSaveHistory] = useState(false)
   const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
-    new Map()
-  );
+    new Map(),
+  )
 
   const { handleSubmit, control, register, reset } = useForm<{
-    papers: Paper[];
+    papers: Paper[]
   }>({
     defaultValues: { papers: [{ ...paperFields, id: makeid(5) }] },
-  });
+  })
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "papers",
-  });
+    name: 'papers',
+  })
 
   const addPaper = () => {
-    append({ ...paperFields, id: makeid(5) });
-    setShowSaveHistory(false);
-  };
+    append({ ...paperFields, id: makeid(5) })
+    setShowSaveHistory(false)
+  }
 
   // const handleRemovePaper = async (idx: string, index: number) => {
   //   remove(index);
@@ -43,41 +43,43 @@ export default function Dashboard() {
   // };
 
   const clearAll = () => {
-    reset({ papers: [{ ...paperFields, id: makeid(5) }] });
-    setFinalPrice(0);
-    setCustomerName("");
-    setShowSaveHistory(false);
-    perPaperResult.clear();
-  };
+    reset({ papers: [{ ...paperFields, id: makeid(5) }] })
+    setFinalPrice(0)
+    setCustomerName('')
+    setShowSaveHistory(false)
+    perPaperResult.clear()
+  }
 
   const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
     // TODO: Fix Map integration
     // perPaperResult.clear();
 
-    const { papers } = data;
+    const { papers } = data
+    const results = new Map<string, number>()
 
-    let total = 0;
-    const results = new Map();
+    let total = 0
 
     papers.forEach((paper) => {
-      const totalPerPaper = calculateCost(paper);
+      const totalPerPaper = calculateCost(paper)
+      results.set(paper.id, totalPerPaper)
+      total += totalPerPaper
+    })
 
-      results.set(paper.id, totalPerPaper);
-      total += totalPerPaper;
-
-      setPerPaperResult((prev) => {
-        const newMap = new Map(prev);
-        newMap.set(paper.id, total);
-        return newMap;
-      });
-    });
-
-    setFinalPrice(total);
-    setShowSaveHistory(true);
-  };
+    // setPerPaperResult(new Map(results))
+    setPerPaperResult((prevState) => {
+      const newState = new Map(prevState)
+      results.forEach((value, key) => {
+        newState.set(key, value)
+      })
+      return newState
+    })
+    console.log('Per paper results:', Object.fromEntries(results))
+    setFinalPrice(total)
+    setShowSaveHistory(true)
+  }
 
   const saveHistory = async () => {
-    console.log(fields);
+    console.log(fields)
     // const response = await addHistory({
     // 		name: customerName,
     // 		final_price: finalPrice,
@@ -90,8 +92,8 @@ export default function Dashboard() {
     // 		return
     // 	}
     // totalHistoryStore = await getTotalHistory()
-    toast.success("Cost details saved successfully");
-  };
+    toast.success('Cost details saved successfully')
+  }
 
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
@@ -120,7 +122,8 @@ export default function Dashboard() {
           {fields.map((paper: Paper, index) => {
             return (
               <div
-                key={paper.id}
+                // key={paper.id}
+                key={`${paper.id}-${perPaperResult.get(paper.id) || 'initial'}`}
                 className="flex flex-row items-center justify-between rounded"
               >
                 <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
@@ -140,22 +143,22 @@ export default function Dashboard() {
                         placeholder={placeholders[fieldName]}
                         {...register(`papers.${index}.${fieldName}`)}
                       />
-                    );
+                    )
                   })}
                 </div>
                 <div className="flex flex-grow justify-center px-1">
                   <p
                     className={`pr-[2px] ${
-                      perPaperResult.get(paper.id)
-                        ? "font-semibold"
-                        : "font-light text-gray-400"
+                      perPaperResult.has(paper.id)
+                        ? 'font-semibold'
+                        : 'font-light text-gray-400'
                     }`}
                   >
-                    = {perPaperResult.get(paper.id)?.toFixed(2) || "total"}
+                    = {perPaperResult.get(paper.id)?.toFixed(2) || 'total'}
                   </p>
                 </div>
               </div>
-            );
+            )
           })}
         </div>
 
@@ -191,5 +194,5 @@ export default function Dashboard() {
         </div>
       </div>
     </section>
-  );
+  )
 }

@@ -1,13 +1,13 @@
-import { defineConfig } from "vite";
-import { loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
+import { defineConfig } from 'vite'
+import { loadEnv } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default ({ mode }: { mode: string }) => {
-  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
   return defineConfig({
     build: {
-      outDir: "build",
+      outDir: 'build',
     },
     plugins: [react()],
     server: {
@@ -15,13 +15,13 @@ export default ({ mode }: { mode: string }) => {
     },
     resolve: {
       alias: {
-        "@/*": path.resolve(__dirname, "src/*"),
-        "@/components": path.resolve(__dirname, "src/components"),
-        "@/types": path.resolve(__dirname, "src/types/"),
-        "@/db": path.resolve(__dirname, "src/db/"),
-        "@/store": path.resolve(__dirname, "src/store"),
-        "@/utils": path.resolve(__dirname, "src/utils/"),
+        '@/*': path.resolve(__dirname, 'src/*'),
+        '@/components': path.resolve(__dirname, 'src/components'),
+        '@/types': path.resolve(__dirname, 'src/types/'),
+        '@/db': path.resolve(__dirname, 'src/db/'),
+        '@/store': path.resolve(__dirname, 'src/store'),
+        '@/utils': path.resolve(__dirname, 'src/utils/'),
       },
     },
-  });
-};
+  })
+}
