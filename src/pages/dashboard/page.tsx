@@ -1,4 +1,4 @@
-import Button from '@/components/Button'
+// import Button from '@/components/Button'
 import { MAX_PAPER, paperFields } from '@/utils/constants'
 import { makeid } from '@/utils/tools'
 import Result from '@/components/Result'
@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
 import { useUserStore } from '@/store'
 import { motion } from 'framer-motion'
+import { Button } from 'antd'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
@@ -156,8 +157,9 @@ export default function Dashboard() {
           />
           {showSaveHistory && (
             <Button
+              type="primary"
               onClick={saveHistory}
-              classNames="text-sm animate-pulse !w-[30%] !px-1"
+              className="text-sm animate-pulse !w-[30%] !px-1"
             >
               Save cost
             </Button>
@@ -175,7 +177,7 @@ export default function Dashboard() {
                 className="flex flex-row items-center justify-between rounded"
               >
                 <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
-                  <button
+                  <Button
                     disabled={fields.length === 1}
                     onClick={() => {
                       if (fields.length === 1) return
@@ -184,7 +186,7 @@ export default function Dashboard() {
                     className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
                   >
                     <Icon icon="ph:trash-light" width="16px" />
-                  </button>
+                  </Button>
 
                   {paperFieldsName.map((fieldName, paperIndex) => {
                     return (
@@ -221,7 +223,8 @@ export default function Dashboard() {
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">
           <div className="flex flex-row justify-between w-full mt-3">
             <Button
-              classNames="text-sm"
+              type="default"
+              className="text-sm"
               onClick={addPaper}
               disabled={fields.length == MAX_PAPER}
             >
