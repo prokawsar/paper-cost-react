@@ -10,7 +10,7 @@ export type Paper = {
 }
 
 export type CostHistoryType = {
-  id?: string
+  id: string
   name: string
   papers: Paper[]
   final_price: number
