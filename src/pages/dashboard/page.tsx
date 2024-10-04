@@ -11,6 +11,7 @@ import { addHistory, calculateCost } from '@/utils/services'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
 import { useUserStore } from '@/store'
+import { motion } from 'framer-motion'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
@@ -165,8 +166,11 @@ export default function Dashboard() {
         <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
           {fields.map((paper: Paper, index) => {
             return (
-              <div
+              <motion.div
                 key={paper.id}
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.3 }}
                 className="flex flex-row items-center justify-between rounded"
               >
                 <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
@@ -208,7 +212,7 @@ export default function Dashboard() {
                     = {perPaperResult.get(paper.id)?.toFixed(2) || 'total'}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             )
           })}
         </div>
