@@ -20,7 +20,12 @@ export function Layout() {
         {state == 'loading' ? <Loader /> : <Outlet />}
       </div>
       <GlobalLoader />
-      <Toaster richColors position="bottom-right" closeButton />
+      <Toaster
+        className="!py-0"
+        richColors
+        position="bottom-right"
+        closeButton
+      />
       <Footer />
     </main>
   )

@@ -26,6 +26,7 @@ export const addHistory = async (history: CostHistoryType) => {
     name: history.name || '',
     papers: history.papers || [],
     final_price: history.final_price || 0,
+    user: history.user,
   })
   if (!error) {
     return data

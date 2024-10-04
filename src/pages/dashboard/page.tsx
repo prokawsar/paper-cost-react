@@ -3,25 +3,27 @@ import { MAX_PAPER, paperFields } from '@/utils/constants'
 import { makeid } from '@/utils/tools'
 import Result from '@/components/Result'
 import { useState } from 'react'
-import { Paper } from '@/types/index'
+import { CostHistoryType, Paper } from '@/types/index'
 import { fields as paperFieldsName, placeholders } from '@/utils/constants'
 
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { addHistory, calculateCost } from '@/utils/services'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
+import { useUserStore } from '@/store'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
 
   const [finalPrice, setFinalPrice] = useState(0)
-  const [customerName, setCustomerName] = useState('')
+  const [productName, setProductName] = useState('')
   const [showSaveHistory, setShowSaveHistory] = useState(false)
   const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
     new Map(),
   )
+  const { userData } = useUserStore()
 
-  const { handleSubmit, control, register, reset } = useForm<{
+  const { handleSubmit, control, register, reset, getValues } = useForm<{
     papers: Paper[]
   }>({
     defaultValues: { papers: [{ ...paperFields, id: makeid(5) }] },
@@ -45,7 +47,7 @@ export default function Dashboard() {
   const clearAll = () => {
     reset({ papers: [{ ...paperFields, id: makeid(5) }] })
     setFinalPrice(0)
-    setCustomerName('')
+    setProductName('')
     setShowSaveHistory(false)
     perPaperResult.clear()
   }
@@ -79,18 +81,32 @@ export default function Dashboard() {
   }
 
   const saveHistory = async () => {
-    console.log(fields)
-    // const response = await addHistory({
-    // 		name: customerName,
-    // 		final_price: finalPrice,
-    // 		papers: papers,
-    // 		user: 'dd'
-    // 	})
+    if (!productName.trim()) {
+      toast.error('Please enter a product name')
+      return
+    }
 
-    // 	if (response && response?.message.indexOf('TypeError') != -1) {
-    // 		toast.error('Failed to save history, you are offline!')
-    // 		return
-    // 	}
+    const papers = getValues('papers')
+
+    if (!papers || papers.length === 0) {
+      toast.error('No paper details to save')
+      return
+    }
+
+    const historyData: CostHistoryType = {
+      name: productName,
+      final_price: finalPrice,
+      papers: papers,
+      user: userData?.id || '',
+    }
+
+    const response = await addHistory(historyData)
+
+    if (response && response?.message.indexOf('TypeError') != -1) {
+      toast.error('Failed to save history, you are offline!')
+      return
+    }
+    //TODO: set total history to limit saving history
     // totalHistoryStore = await getTotalHistory()
     toast.success('Cost details saved successfully')
   }
@@ -106,6 +122,8 @@ export default function Dashboard() {
           <input
             type="text"
             placeholder="Product name"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
             className="border-b py-[2px] border-dashed w-full h-full px-2 focus:outline-none focus:border-teal-500"
           />
           {showSaveHistory && (
@@ -122,8 +140,7 @@ export default function Dashboard() {
           {fields.map((paper: Paper, index) => {
             return (
               <div
-                // key={paper.id}
-                key={`${paper.id}-${perPaperResult.get(paper.id) || 'initial'}`}
+                key={paper.id}
                 className="flex flex-row items-center justify-between rounded"
               >
                 <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
