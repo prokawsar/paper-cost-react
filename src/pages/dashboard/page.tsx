@@ -23,7 +23,15 @@ export default function Dashboard() {
   )
   const { userData } = useUserStore()
 
-  const { handleSubmit, control, register, reset, getValues } = useForm<{
+  const {
+    handleSubmit,
+    control,
+    register,
+    reset,
+    getValues,
+    setError,
+    formState: { errors },
+  } = useForm<{
     papers: Paper[]
   }>({
     defaultValues: { papers: [{ ...paperFields, id: makeid(5) }] },
@@ -56,11 +64,17 @@ export default function Dashboard() {
     // TODO: Fix Map integration
     // perPaperResult.clear();
 
+    // Manual validation check
+    // if (hasEmptyFields) {
+    //   console.log('Manual validation failed')
+    //   toast.error('Please fill in all required fields')
+    //   return
+    // }
+
     const { papers } = data
     const results = new Map<string, number>()
 
     let total = 0
-
     papers.forEach((paper) => {
       const totalPerPaper = calculateCost(paper)
       results.set(paper.id, totalPerPaper)
@@ -158,9 +172,13 @@ export default function Dashboard() {
                   {paperFieldsName.map((fieldName, paperIndex) => {
                     return (
                       <input
-                        className={`border border-gray-400 w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
+                        className={`border ${
+                          errors.papers?.[index]?.[fieldName]
+                            ? 'border-red-500'
+                            : 'border-gray-400'
+                        }  w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
                         type="number"
-                        key={paperIndex}
+                        key={`${paper.id}-${paperIndex}`}
                         placeholder={placeholders[fieldName]}
                         {...register(`papers.${index}.${fieldName}`)}
                       />
@@ -203,7 +221,7 @@ export default function Dashboard() {
             )}
             {/* TODO: Set disabled state */}
             <Button onClick={handleSubmit(calculatePaperCost)}>
-              Calculate
+              {finalPrice > 0 ? 'Recalculate' : 'Calculate'}
             </Button>
           </div>
 
