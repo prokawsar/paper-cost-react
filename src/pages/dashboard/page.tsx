@@ -1,28 +1,25 @@
 import Button from '@/components/Button'
 import { MAX_PAPER, paperFields } from '@/utils/constants'
-import { makeid } from '@/utils/tools'
+import { checkEmptyFields, makeid } from '@/utils/tools'
 import Result from '@/components/Result'
 import { useState } from 'react'
-import { CostHistoryType, Paper } from '@/types/index'
+import { Paper } from '@/types/index'
 import { fields as paperFieldsName, placeholders } from '@/utils/constants'
-
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
-import { addHistory, calculateCost } from '@/utils/services'
+import { calculateCost } from '@/utils/services'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
-import { useUserStore } from '@/store'
 import { motion } from 'framer-motion'
+import { ProductName } from '@/components/ProductName'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
 
   const [finalPrice, setFinalPrice] = useState(0)
-  const [productName, setProductName] = useState('')
   const [showSaveHistory, setShowSaveHistory] = useState(false)
   const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
     new Map(),
   )
-  const { userData } = useUserStore()
 
   const {
     handleSubmit,
@@ -51,34 +48,15 @@ export default function Dashboard() {
   const clearAll = () => {
     reset({ papers: [{ ...paperFields, id: makeid(5) }] })
     setFinalPrice(0)
-    setProductName('')
     setShowSaveHistory(false)
     perPaperResult.clear()
-  }
-
-  const checkEmptyFields = (data: { papers: Paper[] }) => {
-    const fieldNames = Object.keys(data.papers[0]).filter((key) => key !== 'id')
-
-    let emptyState = false
-    data.papers.forEach((paper, index) => {
-      fieldNames.forEach((fieldName) => {
-        if (paper[fieldName as keyof Paper] === '') {
-          emptyState = true
-          setError(`papers.${index}.${fieldName}`, {
-            type: 'manual',
-            message: 'This field is required',
-          })
-        }
-      })
-    })
-    return emptyState
   }
 
   const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
     // TODO: Fix Map integration
     // perPaperResult.clear();
 
-    const hasEmptyFields = checkEmptyFields(data)
+    const hasEmptyFields = checkEmptyFields(data, setError)
     if (hasEmptyFields) {
       toast.warning('Please fill in all required fields')
       return
@@ -107,38 +85,6 @@ export default function Dashboard() {
     setShowSaveHistory(true)
   }
 
-  const saveHistory = async () => {
-    if (!productName.trim()) {
-      toast.warning('Please enter a product name')
-      return
-    }
-
-    const papers = getValues('papers')
-
-    if (!papers || papers.length === 0) {
-      toast.error('No paper details to save')
-      return
-    }
-
-    const historyData: CostHistoryType = {
-      id: '', // it will not pass to supabase, see addHistory()
-      name: productName,
-      final_price: finalPrice,
-      papers: papers,
-      user: userData?.id || '',
-    }
-
-    const response = await addHistory(historyData)
-
-    if (response && response?.message.indexOf('TypeError') != -1) {
-      toast.error('Failed to save history, you are offline!')
-      return
-    }
-    //TODO: set total history to limit saving history
-    // totalHistoryStore = await getTotalHistory()
-    toast.success('Cost details saved successfully')
-  }
-
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
       <h1 className="text-xl text-center text-teal-500 font-semibold">
@@ -146,24 +92,11 @@ export default function Dashboard() {
       </h1>
       <div className="w-full bg-gradient-to-r from-transparent via-slate-600/10 to-transparent p-[1px]" />
       <div className="flex flex-col w-full justify-between gap-2 h-[90%] items-center">
-        <div className="flex w-full gap-1 items-start">
-          <input
-            type="text"
-            placeholder="Product name"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            className="border-b py-[2px] border-dashed w-full h-full px-2 focus:outline-none focus:border-teal-500"
-          />
-          {showSaveHistory && (
-            <Button
-              onClick={saveHistory}
-              classNames="text-sm animate-pulse !w-[30%] !px-1"
-            >
-              Save cost
-            </Button>
-          )}
-        </div>
-
+        <ProductName
+          finalPrice={finalPrice}
+          papers={getValues('papers')}
+          showSaveHistory={showSaveHistory}
+        />
         <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
           {fields.map((paper: Paper, index) => {
             return (
