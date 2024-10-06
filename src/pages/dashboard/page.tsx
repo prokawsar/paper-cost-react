@@ -1,4 +1,5 @@
-// import Button from '@/components/Button'
+import Button from '@/components/Button'
+// import { Button } from 'antd'
 import { MAX_PAPER, paperFields } from '@/utils/constants'
 import { checkEmptyFields, makeid } from '@/utils/tools'
 import Result from '@/components/Result'
@@ -10,7 +11,6 @@ import { calculateCost } from '@/utils/services'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from 'antd'
 import { ProductName } from '@/components/ProductName'
 
 export default function Dashboard() {
@@ -154,8 +154,7 @@ export default function Dashboard() {
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">
           <div className="flex flex-row justify-between w-full mt-3">
             <Button
-              type="default"
-              className="text-sm"
+              classNames="text-sm"
               onClick={addPaper}
               disabled={fields.length == MAX_PAPER}
             >
