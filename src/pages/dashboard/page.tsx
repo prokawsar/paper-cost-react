@@ -2,7 +2,7 @@
 import { MAX_PAPER, paperFields } from '@/utils/constants'
 import { checkEmptyFields, makeid } from '@/utils/tools'
 import Result from '@/components/Result'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Paper } from '@/types/index'
 import { fields as paperFieldsName, placeholders } from '@/utils/constants'
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
@@ -17,10 +17,7 @@ export default function Dashboard() {
   document.title = 'Paper Cost'
 
   const [finalPrice, setFinalPrice] = useState(0)
-  const [showSaveHistory, setShowSaveHistory] = useState(false)
-  const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
-    new Map(),
-  )
+  const [isCostCalculated, setIsCostCalculated] = useState(false)
 
   const {
     handleSubmit,
@@ -43,40 +40,46 @@ export default function Dashboard() {
 
   const addPaper = () => {
     append({ ...paperFields, uid: makeid(5) })
-    setShowSaveHistory(false)
+    setIsCostCalculated(false)
   }
 
   const clearAll = () => {
     reset({ papers: [{ ...paperFields, uid: makeid(5) }] })
     setFinalPrice(0)
-    setShowSaveHistory(false)
-    perPaperResult.clear()
+    setIsCostCalculated(false)
   }
 
-  const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
-    // TODO: Fix Map integration
-    // perPaperResult.clear();
+  const calculateResult = useMemo<[Map<string, number>, number] | null>(() => {
+    if (isCostCalculated) {
+      const results = new Map<string, number>()
+      const papers = getValues('papers')
 
+      let total = 0
+      papers.forEach((paper) => {
+        const totalPerPaper = calculateCost(paper)
+        results.set(paper.uid, totalPerPaper)
+        total += totalPerPaper
+      })
+      return [results, total]
+    }
+    return null
+  }, [isCostCalculated, getValues('papers')])
+
+  const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
     const hasEmptyFields = checkEmptyFields(data, setError)
     if (hasEmptyFields) {
       toast.warning('Please fill in all required fields')
       return
     }
-
-    const { papers } = data
-    const results = new Map<string, number>()
-
-    let total = 0
-    papers.forEach((paper) => {
-      const totalPerPaper = calculateCost(paper)
-      results.set(paper.uid, totalPerPaper)
-      total += totalPerPaper
-    })
-    setPerPaperResult(results)
-    console.log('Per paper results:', Object.fromEntries(results))
-    setFinalPrice(total)
-    setShowSaveHistory(true)
+    setIsCostCalculated(true)
   }
+
+  useEffect(() => {
+    const [results, total] = calculateResult || []
+    if (total && total > 0) {
+      setFinalPrice(total)
+    }
+  }, [calculateResult])
 
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
@@ -88,7 +91,7 @@ export default function Dashboard() {
         <ProductName
           finalPrice={finalPrice}
           papers={getValues('papers')}
-          showSaveHistory={showSaveHistory}
+          showSaveHistory={isCostCalculated}
         />
         <div className="flex flex-col gap-[2px] overflow-y-auto overflow-x-hidden max-w-3xl max-h-[85%] py-2 w-full">
           <AnimatePresence>
@@ -133,12 +136,13 @@ export default function Dashboard() {
                   <div className="flex flex-grow justify-center px-1">
                     <p
                       className={`pr-[2px] ${
-                        perPaperResult.has(paper.uid)
+                        calculateResult?.[0]?.has(paper.uid)
                           ? 'font-semibold'
                           : 'font-light text-gray-400'
                       }`}
                     >
-                      {perPaperResult.get(paper.uid)?.toFixed(2) || 'total'}
+                      {calculateResult?.[0]?.get(paper.uid)?.toFixed(2) ||
+                        'total'}
                     </p>
                   </div>
                 </motion.div>
