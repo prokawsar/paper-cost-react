@@ -33,7 +33,7 @@ export default function Dashboard() {
   } = useForm<{
     papers: Paper[]
   }>({
-    defaultValues: { papers: [{ ...paperFields, id: makeid(5) }] },
+    defaultValues: { papers: [{ ...paperFields, uid: makeid(5) }] },
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -42,12 +42,12 @@ export default function Dashboard() {
   })
 
   const addPaper = () => {
-    append({ ...paperFields, id: makeid(5) })
+    append({ ...paperFields, uid: makeid(5) })
     setShowSaveHistory(false)
   }
 
   const clearAll = () => {
-    reset({ papers: [{ ...paperFields, id: makeid(5) }] })
+    reset({ papers: [{ ...paperFields, uid: makeid(5) }] })
     setFinalPrice(0)
     setShowSaveHistory(false)
     perPaperResult.clear()
@@ -69,18 +69,10 @@ export default function Dashboard() {
     let total = 0
     papers.forEach((paper) => {
       const totalPerPaper = calculateCost(paper)
-      results.set(paper.id, totalPerPaper)
+      results.set(paper.uid, totalPerPaper)
       total += totalPerPaper
     })
-
-    // setPerPaperResult(new Map(results))
-    setPerPaperResult((prevState) => {
-      const newState = new Map(prevState)
-      results.forEach((value, key) => {
-        newState.set(key, value)
-      })
-      return newState
-    })
+    setPerPaperResult(results)
     console.log('Per paper results:', Object.fromEntries(results))
     setFinalPrice(total)
     setShowSaveHistory(true)
@@ -102,7 +94,7 @@ export default function Dashboard() {
           {fields.map((paper: Paper, index) => {
             return (
               <motion.div
-                key={paper.id}
+                key={paper.uid}
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.3 }}
@@ -129,7 +121,7 @@ export default function Dashboard() {
                             : 'border-gray-400'
                         }  w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
                         type="number"
-                        key={`${paper.id}-${paperIndex}`}
+                        key={`${paper.uid}-${paperIndex}`}
                         placeholder={placeholders[fieldName]}
                         {...register(`papers.${index}.${fieldName}`)}
                       />
@@ -139,12 +131,12 @@ export default function Dashboard() {
                 <div className="flex flex-grow justify-center px-1">
                   <p
                     className={`pr-[2px] ${
-                      perPaperResult.has(paper.id)
+                      perPaperResult.has(paper.uid)
                         ? 'font-semibold'
                         : 'font-light text-gray-400'
                     }`}
                   >
-                    = {perPaperResult.get(paper.id)?.toFixed(2) || 'total'}
+                    {perPaperResult.get(paper.uid)?.toFixed(2) || 'total'}
                   </p>
                 </div>
               </motion.div>
