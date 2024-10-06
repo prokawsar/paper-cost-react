@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export type Paper = {
-  id: string
+  uid: string
   length: string
   width: string
   thickness: string

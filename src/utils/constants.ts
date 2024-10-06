@@ -6,7 +6,7 @@ export const MAX_PAPER = 10
 export const MAX_HISTORY = 20
 
 export const paperFields = {
-  id: '',
+  uid: '',
   length: '',
   width: '',
   thickness: '',
@@ -18,4 +18,4 @@ export const placeholders: { [key: string]: string } = {
   thickness: 'GSM',
   rate: 'R',
 }
-export const fields = Object.keys(paperFields).filter((key) => key !== 'id')
+export const fields = Object.keys(paperFields).filter((key) => key !== 'uid')

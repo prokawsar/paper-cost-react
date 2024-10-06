@@ -39,7 +39,7 @@ export default function Modal({
         ref={modalRef}
       >
         <button
-          className="absolute top-0 right-0 p-[3px] rounded-full w-fit"
+          className="absolute top-0 right-0 p-[3px] rounded-full w-fit z-10"
           onClick={() => onClickBackdrop()}
         >
           <Icon icon="majesticons:multiply" width="20px" />

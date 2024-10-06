@@ -9,6 +9,7 @@ import { LoginFields, loginSchema } from '../types'
 import { ErrorMessage } from '@/components/ErrorMessage'
 import { useState } from 'react'
 import { Icon } from '@iconify/react'
+import { Button } from 'antd'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -104,14 +105,14 @@ export default function Login() {
             <ErrorMessage>{errors.password.message}</ErrorMessage>
           )}
         </div>
-        <SubmitButton
-          disabled={isSubmitting}
-          isSubmit={isSubmitting}
-          className="my-2 rounded-md bg-slate-500 px-4 py-2 disabled:cursor-not-allowed text-white hover:bg-slate-600"
-          pendingText="Signing In..."
+        <Button
+          type="primary"
+          className="py-5"
+          htmlType="submit"
+          loading={isSubmitting}
         >
           Sign In
-        </SubmitButton>
+        </Button>
         <p className="text-center">
           Haven't account?{' '}
           <Link className=" text-sky-600" to="/signup">

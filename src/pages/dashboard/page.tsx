@@ -1,25 +1,23 @@
 import Button from '@/components/Button'
+// import { Button } from 'antd'
 import { MAX_PAPER, paperFields } from '@/utils/constants'
 import { checkEmptyFields, makeid } from '@/utils/tools'
 import Result from '@/components/Result'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Paper } from '@/types/index'
 import { fields as paperFieldsName, placeholders } from '@/utils/constants'
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { calculateCost } from '@/utils/services'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { ProductName } from '@/components/ProductName'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
 
   const [finalPrice, setFinalPrice] = useState(0)
-  const [showSaveHistory, setShowSaveHistory] = useState(false)
-  const [perPaperResult, setPerPaperResult] = useState<Map<string, number>>(
-    new Map(),
-  )
+  const [isCostCalculated, setIsCostCalculated] = useState(false)
 
   const {
     handleSubmit,
@@ -32,7 +30,7 @@ export default function Dashboard() {
   } = useForm<{
     papers: Paper[]
   }>({
-    defaultValues: { papers: [{ ...paperFields, id: makeid(5) }] },
+    defaultValues: { papers: [{ ...paperFields, uid: makeid(5) }] },
   })
 
   const { fields, append, remove } = useFieldArray({
@@ -41,49 +39,47 @@ export default function Dashboard() {
   })
 
   const addPaper = () => {
-    append({ ...paperFields, id: makeid(5) })
-    setShowSaveHistory(false)
+    append({ ...paperFields, uid: makeid(5) })
+    setIsCostCalculated(false)
   }
 
   const clearAll = () => {
-    reset({ papers: [{ ...paperFields, id: makeid(5) }] })
+    reset({ papers: [{ ...paperFields, uid: makeid(5) }] })
     setFinalPrice(0)
-    setShowSaveHistory(false)
-    perPaperResult.clear()
+    setIsCostCalculated(false)
   }
 
-  const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
-    // TODO: Fix Map integration
-    // perPaperResult.clear();
+  const calculateResult = useMemo<[Map<string, number>, number] | null>(() => {
+    if (isCostCalculated) {
+      const results = new Map<string, number>()
+      const papers = getValues('papers')
 
+      let total = 0
+      papers.forEach((paper) => {
+        const totalPerPaper = calculateCost(paper)
+        results.set(paper.uid, totalPerPaper)
+        total += totalPerPaper
+      })
+      return [results, total]
+    }
+    return null
+  }, [isCostCalculated, getValues('papers')])
+
+  const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
     const hasEmptyFields = checkEmptyFields(data, setError)
     if (hasEmptyFields) {
       toast.warning('Please fill in all required fields')
       return
     }
-
-    const { papers } = data
-    const results = new Map<string, number>()
-
-    let total = 0
-    papers.forEach((paper) => {
-      const totalPerPaper = calculateCost(paper)
-      results.set(paper.id, totalPerPaper)
-      total += totalPerPaper
-    })
-
-    // setPerPaperResult(new Map(results))
-    setPerPaperResult((prevState) => {
-      const newState = new Map(prevState)
-      results.forEach((value, key) => {
-        newState.set(key, value)
-      })
-      return newState
-    })
-    console.log('Per paper results:', Object.fromEntries(results))
-    setFinalPrice(total)
-    setShowSaveHistory(true)
+    setIsCostCalculated(true)
   }
+
+  useEffect(() => {
+    const [results, total] = calculateResult || []
+    if (total && total > 0) {
+      setFinalPrice(total)
+    }
+  }, [calculateResult])
 
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
@@ -95,60 +91,64 @@ export default function Dashboard() {
         <ProductName
           finalPrice={finalPrice}
           papers={getValues('papers')}
-          showSaveHistory={showSaveHistory}
+          showSaveHistory={isCostCalculated}
         />
-        <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
-          {fields.map((paper: Paper, index) => {
-            return (
-              <motion.div
-                key={paper.id}
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex flex-row items-center justify-between rounded"
-              >
-                <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
-                  <button
-                    disabled={fields.length === 1}
-                    onClick={() => {
-                      if (fields.length === 1) return
-                      remove(index)
-                    }}
-                    className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
-                  >
-                    <Icon icon="ph:trash-light" width="16px" />
-                  </button>
+        <div className="flex flex-col gap-[2px] overflow-y-auto overflow-x-hidden max-w-3xl max-h-[85%] py-2 w-full">
+          <AnimatePresence>
+            {fields.map((paper: Paper, index) => {
+              return (
+                <motion.div
+                  key={paper.uid}
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: 100, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-row items-center justify-between rounded"
+                >
+                  <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
+                    <Button
+                      disabled={fields.length === 1}
+                      onClick={() => {
+                        if (fields.length === 1) return
+                        remove(index)
+                      }}
+                      className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
+                    >
+                      <Icon icon="ph:trash-light" width="16px" />
+                    </Button>
 
-                  {paperFieldsName.map((fieldName, paperIndex) => {
-                    return (
-                      <input
-                        className={`border ${
-                          errors.papers?.[index]?.[fieldName]
-                            ? 'border-red-500'
-                            : 'border-gray-400'
-                        }  w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
-                        type="number"
-                        key={`${paper.id}-${paperIndex}`}
-                        placeholder={placeholders[fieldName]}
-                        {...register(`papers.${index}.${fieldName}`)}
-                      />
-                    )
-                  })}
-                </div>
-                <div className="flex flex-grow justify-center px-1">
-                  <p
-                    className={`pr-[2px] ${
-                      perPaperResult.has(paper.id)
-                        ? 'font-semibold'
-                        : 'font-light text-gray-400'
-                    }`}
-                  >
-                    = {perPaperResult.get(paper.id)?.toFixed(2) || 'total'}
-                  </p>
-                </div>
-              </motion.div>
-            )
-          })}
+                    {paperFieldsName.map((fieldName, paperIndex) => {
+                      return (
+                        <input
+                          className={`border ${
+                            errors.papers?.[index]?.[fieldName]
+                              ? 'border-red-500'
+                              : 'border-gray-400'
+                          }  w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
+                          type="number"
+                          key={`${paper.uid}-${paperIndex}`}
+                          placeholder={placeholders[fieldName]}
+                          {...register(`papers.${index}.${fieldName}`)}
+                        />
+                      )
+                    })}
+                  </div>
+                  <div className="flex flex-grow justify-center px-1">
+                    <p
+                      className={`pr-[2px] ${
+                        calculateResult?.[0]?.has(paper.uid)
+                          ? 'font-semibold'
+                          : 'font-light text-gray-400'
+                      }`}
+                    >
+                      {calculateResult?.[0]?.get(paper.uid)?.toFixed(2) ||
+                        'total'}
+                    </p>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
         </div>
 
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">

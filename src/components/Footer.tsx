@@ -6,6 +6,7 @@ import { useUserStore } from '@/store/index'
 import { supabase } from '@/db/supabase'
 import { Link, useNavigate } from 'react-router-dom'
 import AuthButton from './AuthButton'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function Footer() {
   const [showSettings, setSettings] = useState(false)
@@ -62,11 +63,19 @@ export default function Footer() {
           </button>
         </div>
       )}
-      {showAbout && (
-        <Modal onClickBackdrop={() => setAbout(false)}>
-          <About user={userData} />
-        </Modal>
-      )}
+      <AnimatePresence>
+        {showAbout && (
+          <Modal onClickBackdrop={() => setAbout(false)}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ ease: 'easeOut', duration: 2 }}
+            >
+              <About user={userData} />
+            </motion.div>
+          </Modal>
+        )}
+      </AnimatePresence>
     </footer>
   )
 }
