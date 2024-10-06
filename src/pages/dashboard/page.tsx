@@ -9,7 +9,7 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { calculateCost } from '@/utils/services'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from 'antd'
 import { ProductName } from '@/components/ProductName'
 
@@ -90,58 +90,61 @@ export default function Dashboard() {
           papers={getValues('papers')}
           showSaveHistory={showSaveHistory}
         />
-        <div className="flex flex-col gap-[2px] overflow-y-auto max-w-3xl max-h-[85%] py-2 w-full">
-          {fields.map((paper: Paper, index) => {
-            return (
-              <motion.div
-                key={paper.uid}
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex flex-row items-center justify-between rounded"
-              >
-                <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
-                  <Button
-                    disabled={fields.length === 1}
-                    onClick={() => {
-                      if (fields.length === 1) return
-                      remove(index)
-                    }}
-                    className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
-                  >
-                    <Icon icon="ph:trash-light" width="16px" />
-                  </Button>
+        <div className="flex flex-col gap-[2px] overflow-y-auto overflow-x-hidden max-w-3xl max-h-[85%] py-2 w-full">
+          <AnimatePresence>
+            {fields.map((paper: Paper, index) => {
+              return (
+                <motion.div
+                  key={paper.uid}
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: 100, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex flex-row items-center justify-between rounded"
+                >
+                  <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
+                    <Button
+                      disabled={fields.length === 1}
+                      onClick={() => {
+                        if (fields.length === 1) return
+                        remove(index)
+                      }}
+                      className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
+                    >
+                      <Icon icon="ph:trash-light" width="16px" />
+                    </Button>
 
-                  {paperFieldsName.map((fieldName, paperIndex) => {
-                    return (
-                      <input
-                        className={`border ${
-                          errors.papers?.[index]?.[fieldName]
-                            ? 'border-red-500'
-                            : 'border-gray-400'
-                        }  w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
-                        type="number"
-                        key={`${paper.uid}-${paperIndex}`}
-                        placeholder={placeholders[fieldName]}
-                        {...register(`papers.${index}.${fieldName}`)}
-                      />
-                    )
-                  })}
-                </div>
-                <div className="flex flex-grow justify-center px-1">
-                  <p
-                    className={`pr-[2px] ${
-                      perPaperResult.has(paper.uid)
-                        ? 'font-semibold'
-                        : 'font-light text-gray-400'
-                    }`}
-                  >
-                    {perPaperResult.get(paper.uid)?.toFixed(2) || 'total'}
-                  </p>
-                </div>
-              </motion.div>
-            )
-          })}
+                    {paperFieldsName.map((fieldName, paperIndex) => {
+                      return (
+                        <input
+                          className={`border ${
+                            errors.papers?.[index]?.[fieldName]
+                              ? 'border-red-500'
+                              : 'border-gray-400'
+                          }  w-12 md:w-full p-1 rounded focus:!border-[1.5px] focus:!border-teal-500 focus:outline-none`}
+                          type="number"
+                          key={`${paper.uid}-${paperIndex}`}
+                          placeholder={placeholders[fieldName]}
+                          {...register(`papers.${index}.${fieldName}`)}
+                        />
+                      )
+                    })}
+                  </div>
+                  <div className="flex flex-grow justify-center px-1">
+                    <p
+                      className={`pr-[2px] ${
+                        perPaperResult.has(paper.uid)
+                          ? 'font-semibold'
+                          : 'font-light text-gray-400'
+                      }`}
+                    >
+                      {perPaperResult.get(paper.uid)?.toFixed(2) || 'total'}
+                    </p>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
         </div>
 
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">
