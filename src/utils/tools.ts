@@ -1,3 +1,6 @@
+import { Paper } from '@/types'
+import type { UseFormSetError } from 'react-hook-form'
+
 export function makeid(length: number) {
   let str = ''
   const characters =
@@ -21,4 +24,25 @@ export const sortedByCreatedAt = (data: any) => {
     if (dateA < dateB) return 1
     return 0
   })
+}
+
+export const checkEmptyFields = (
+  data: { papers: Paper[] },
+  setError: UseFormSetError<{ papers: Paper[] }>,
+) => {
+  const fieldNames = Object.keys(data.papers[0]).filter((key) => key !== 'id')
+
+  let emptyState = false
+  data.papers.forEach((paper, index) => {
+    fieldNames.forEach((fieldName) => {
+      if (paper[fieldName as keyof Paper] === '') {
+        emptyState = true
+        setError(`papers.${index}.${fieldName}`, {
+          type: 'manual',
+          message: 'This field is required',
+        })
+      }
+    })
+  })
+  return emptyState
 }
