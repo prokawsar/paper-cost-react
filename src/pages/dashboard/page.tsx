@@ -1,6 +1,6 @@
 import Button from '@/components/Button'
 // import { Button } from 'antd'
-import { MAX_PAPER, paperFields } from '@/utils/constants'
+import { paperFields } from '@/utils/constants'
 import { checkEmptyFields, makeid } from '@/utils/tools'
 import Result from '@/components/Result'
 import { useEffect, useMemo, useState } from 'react'
@@ -12,6 +12,7 @@ import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductName } from '@/components/ProductName'
+import { ActionsSection } from '@/components/ActionsSection'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
@@ -67,6 +68,7 @@ export default function Dashboard() {
 
   const calculatePaperCost: SubmitHandler<{ papers: Paper[] }> = (data) => {
     const hasEmptyFields = checkEmptyFields(data, setError)
+
     if (hasEmptyFields) {
       toast.warning('Please fill in all required fields')
       return
@@ -152,27 +154,13 @@ export default function Dashboard() {
         </div>
 
         <div className="flex flex-col justify-center max-w-3xl w-full gap-4">
-          <div className="flex flex-row justify-between w-full mt-3">
-            <Button
-              classNames="text-sm"
-              onClick={addPaper}
-              disabled={fields.length == MAX_PAPER}
-            >
-              Add paper
-            </Button>
-
-            {finalPrice > 0 && (
-              <button
-                className="border border-red-200 rounded-md px-3 py-1 text-red-400 w-fit"
-                onClick={clearAll}
-              >
-                Clear
-              </button>
-            )}
-            <Button onClick={handleSubmit(calculatePaperCost)}>
-              {finalPrice > 0 ? 'Recalculate' : 'Calculate'}
-            </Button>
-          </div>
+          <ActionsSection
+            addPaper={addPaper}
+            clearAll={clearAll}
+            submitCalculate={handleSubmit(calculatePaperCost)}
+            fieldsLength={fields.length}
+            finalPrice={finalPrice}
+          />
 
           {finalPrice > 0 && (
             <div className="font-bold text-lg flex w-full">
