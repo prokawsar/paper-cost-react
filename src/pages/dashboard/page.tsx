@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductName } from '@/components/ProductName'
 import { ActionsSection } from '@/components/ActionsSection'
+import PerPaperSum from '@/components/PerPaperSum'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
@@ -38,10 +39,18 @@ export default function Dashboard() {
     control,
     name: 'papers',
   })
+  let totalInput = 0
 
   const addPaper = () => {
     append({ ...paperFields, uid: makeid(5) })
     setIsCostCalculated(false)
+  }
+
+  const removePaper = (index: number) => {
+    if (fields.length === 1) return
+    remove(index)
+    inputRefs.current.splice(index, 4)
+    totalInput = inputRefs.current.length
   }
 
   const clearAll = () => {
@@ -84,10 +93,8 @@ export default function Dashboard() {
   }, [calculateResult])
 
   useEffect(() => {
-    console.log(inputRefs.current)
+    //TODO: update focus for input
   }, [getValues('papers')])
-
-  let totalInput = 0
 
   const handleEnterKey = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
@@ -135,12 +142,7 @@ export default function Dashboard() {
                   <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
                     <Button
                       disabled={fields.length === 1}
-                      onClick={() => {
-                        if (fields.length === 1) return
-                        remove(index)
-                        inputRefs.current.splice(index, 4)
-                        totalInput = inputRefs.current.length
-                      }}
+                      onClick={() => removePaper(index)}
                       className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
                     >
                       <Icon icon="ph:trash-light" width="16px" />
@@ -169,18 +171,10 @@ export default function Dashboard() {
                       )
                     })}
                   </div>
-                  <div className="flex flex-grow justify-center px-1">
-                    <p
-                      className={`pr-[2px] ${
-                        calculateResult?.[0]?.has(paper.uid)
-                          ? 'font-semibold'
-                          : 'font-light text-gray-400'
-                      }`}
-                    >
-                      {calculateResult?.[0]?.get(paper.uid)?.toFixed(2) ||
-                        'total'}
-                    </p>
-                  </div>
+                  <PerPaperSum
+                    paperId={paper.uid}
+                    calculateResult={calculateResult?.[0]}
+                  />
                 </motion.div>
               )
             })}
