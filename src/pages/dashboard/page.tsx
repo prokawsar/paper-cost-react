@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [finalPrice, setFinalPrice] = useState(0)
   const [isCostCalculated, setIsCostCalculated] = useState(false)
   const inputRefs = useRef<HTMLInputElement[]>([])
+  const currentFocus = useRef<number | null>(null)
 
   const {
     handleSubmit,
@@ -29,6 +30,7 @@ export default function Dashboard() {
     reset,
     getValues,
     setError,
+    watch,
     formState: { errors },
   } = useForm<{
     papers: Paper[]
@@ -39,6 +41,7 @@ export default function Dashboard() {
     control,
     name: 'papers',
   })
+
   let totalInput = 0
 
   const addPaper = () => {
@@ -85,17 +88,6 @@ export default function Dashboard() {
     setIsCostCalculated(true)
   }
 
-  useEffect(() => {
-    const [results, total] = calculateResult || []
-    if (total && total > 0) {
-      setFinalPrice(total)
-    }
-  }, [calculateResult])
-
-  useEffect(() => {
-    //TODO: update focus for input
-  }, [getValues('papers')])
-
   const handleEnterKey = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -104,9 +96,34 @@ export default function Dashboard() {
       )
       if (currentInput < inputRefs.current.length - 1) {
         inputRefs.current[currentInput + 1].focus()
+        currentFocus.current = currentInput + 1
       }
     }
   }
+
+  useEffect(() => {
+    const { unsubscribe } = watch(() => {
+      setIsCostCalculated(false)
+    })
+    return () => unsubscribe()
+  }, [watch])
+
+  useEffect(() => {
+    const [results, total] = calculateResult || []
+    if (total && total > 0) {
+      setFinalPrice(total)
+    }
+  }, [calculateResult])
+
+  useEffect(() => {
+    if (currentFocus.current != null) {
+      if (currentFocus.current > fields.length * 4) {
+        currentFocus.current = 0
+      } else {
+        inputRefs.current?.[currentFocus.current]?.focus()
+      }
+    }
+  }, [fields])
 
   useEffect(() => {
     document.addEventListener('keydown', handleEnterKey)
@@ -154,6 +171,9 @@ export default function Dashboard() {
                       )
                       return (
                         <input
+                          onClick={() =>
+                            (currentFocus.current = index * 4 + paperIndex)
+                          }
                           ref={(el) => {
                             ref(el)
                             if (el) inputRefs.current[totalInput++] = el
