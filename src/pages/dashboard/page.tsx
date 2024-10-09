@@ -3,7 +3,7 @@ import Button from '@/components/Button'
 import { paperFields } from '@/utils/constants'
 import { checkEmptyFields, makeid } from '@/utils/tools'
 import Result from '@/components/Result'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Paper } from '@/types/index'
 import { fields as paperFieldsName, placeholders } from '@/utils/constants'
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
@@ -13,12 +13,15 @@ import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProductName } from '@/components/ProductName'
 import { ActionsSection } from '@/components/ActionsSection'
+import PerPaperSum from '@/components/PerPaperSum'
 
 export default function Dashboard() {
   document.title = 'Paper Cost'
 
   const [finalPrice, setFinalPrice] = useState(0)
   const [isCostCalculated, setIsCostCalculated] = useState(false)
+  const inputRefs = useRef<HTMLInputElement[]>([])
+  const currentFocus = useRef<number | null>(null)
 
   const {
     handleSubmit,
@@ -27,21 +30,30 @@ export default function Dashboard() {
     reset,
     getValues,
     setError,
+    watch,
     formState: { errors },
   } = useForm<{
     papers: Paper[]
   }>({
     defaultValues: { papers: [{ ...paperFields, uid: makeid(5) }] },
   })
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'papers',
   })
 
+  let totalInput = 0
+
   const addPaper = () => {
     append({ ...paperFields, uid: makeid(5) })
     setIsCostCalculated(false)
+  }
+
+  const removePaper = (index: number) => {
+    if (fields.length === 1) return
+    remove(index)
+    inputRefs.current.splice(index, 4)
+    totalInput = inputRefs.current.length
   }
 
   const clearAll = () => {
@@ -76,12 +88,49 @@ export default function Dashboard() {
     setIsCostCalculated(true)
   }
 
+  const handleEnterKey = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      const currentInput = inputRefs.current.findIndex(
+        (input) => input === document.activeElement,
+      )
+      if (currentInput < inputRefs.current.length - 1) {
+        inputRefs.current[currentInput + 1].focus()
+        currentFocus.current = currentInput + 1
+      }
+    }
+  }
+
+  useEffect(() => {
+    const { unsubscribe } = watch(() => {
+      setIsCostCalculated(false)
+    })
+    return () => unsubscribe()
+  }, [watch])
+
   useEffect(() => {
     const [results, total] = calculateResult || []
     if (total && total > 0) {
       setFinalPrice(total)
     }
   }, [calculateResult])
+
+  useEffect(() => {
+    if (currentFocus.current != null) {
+      if (currentFocus.current > fields.length * 4) {
+        currentFocus.current = 0
+      } else {
+        inputRefs.current?.[currentFocus.current]?.focus()
+      }
+    }
+  }, [fields])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleEnterKey)
+    return () => {
+      document.removeEventListener('keydown', handleEnterKey)
+    }
+  }, [])
 
   return (
     <section className="max-w-6xl mx-auto flex w-full max-h-[85%] flex-col gap-3 px-4 py-3">
@@ -110,18 +159,25 @@ export default function Dashboard() {
                   <div className="flex flex-row gap-[3px] items-center overflow-x-auto">
                     <Button
                       disabled={fields.length === 1}
-                      onClick={() => {
-                        if (fields.length === 1) return
-                        remove(index)
-                      }}
+                      onClick={() => removePaper(index)}
                       className="border border-gray-400 rounded-md text-red-600 p-1 w-fit disabled:border-gray-200 disabled:cursor-not-allowed disabled:text-opacity-45"
                     >
                       <Icon icon="ph:trash-light" width="16px" />
                     </Button>
 
                     {paperFieldsName.map((fieldName, paperIndex) => {
+                      const { ref, ...rest } = register(
+                        `papers.${index}.${fieldName}`,
+                      )
                       return (
                         <input
+                          onClick={() =>
+                            (currentFocus.current = index * 4 + paperIndex)
+                          }
+                          ref={(el) => {
+                            ref(el)
+                            if (el) inputRefs.current[totalInput++] = el
+                          }}
                           className={`border ${
                             errors.papers?.[index]?.[fieldName]
                               ? 'border-red-500'
@@ -130,23 +186,15 @@ export default function Dashboard() {
                           type="number"
                           key={`${paper.uid}-${paperIndex}`}
                           placeholder={placeholders[fieldName]}
-                          {...register(`papers.${index}.${fieldName}`)}
+                          {...rest}
                         />
                       )
                     })}
                   </div>
-                  <div className="flex flex-grow justify-center px-1">
-                    <p
-                      className={`pr-[2px] ${
-                        calculateResult?.[0]?.has(paper.uid)
-                          ? 'font-semibold'
-                          : 'font-light text-gray-400'
-                      }`}
-                    >
-                      {calculateResult?.[0]?.get(paper.uid)?.toFixed(2) ||
-                        'total'}
-                    </p>
-                  </div>
+                  <PerPaperSum
+                    paperId={paper.uid}
+                    calculateResult={calculateResult?.[0]}
+                  />
                 </motion.div>
               )
             })}
