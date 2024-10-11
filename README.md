@@ -10,7 +10,7 @@ This project is specifically designed with a **MOBILE**-first approach, with the
 - [x] Price history saved in Supabase
 - [x] History trash for later recovery
 - [x] Empty field validation
-- [ ] Auto focus next field on press 'Enter'
+- [x] Auto focus next field on press 'Enter'
 - [ ] Calculate the price on press 'Enter' from last input field
 
 
