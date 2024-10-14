@@ -38,7 +38,7 @@ test@gmail.com
 
 ```js
 // Password
-111111
+11111111
 ```
 
 1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new).
