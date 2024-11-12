@@ -1,7 +1,7 @@
 import ReactLogo from '@/components/ReactLogo'
 import SupabaseLogo from '@/components/SupabaseLogo'
 
-function App() {
+export default function Landing() {
   document.title = 'Paper Cost'
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
@@ -23,5 +23,3 @@ function App() {
     </div>
   )
 }
-
-export default App
