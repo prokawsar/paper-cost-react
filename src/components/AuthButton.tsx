@@ -1,28 +1,7 @@
-import { supabase } from '@/db/supabase'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useLoadingStore, useUserStore } from '@/store/index'
+import { Link, useLocation } from 'react-router-dom'
 
 export default function AuthButton() {
   const { pathname } = useLocation()
-  const navigate = useNavigate()
-  const { setIsLoading } = useLoadingStore()
-  const { userData, setUser } = useUserStore()
-
-  const signOut = async () => {
-    setIsLoading(true)
-    await supabase.auth.signOut()
-    setUser(null)
-    setIsLoading(false)
-    navigate('/login')
-  }
-
-  if (userData?.id) {
-    return (
-      <div className="flex items-center gap-4">
-        Hey, {userData.email}!<button onClick={signOut}>Logout</button>
-      </div>
-    )
-  }
 
   const isHomeRoute = () => {
     const showHome = ['/login', '/signup'].includes(pathname)
