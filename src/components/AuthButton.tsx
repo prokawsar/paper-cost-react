@@ -27,12 +27,12 @@ export default function AuthButton() {
   const isHomeRoute = () => {
     const showHome = ['/login', '/signup'].includes(pathname)
     if (showHome) return ['/', 'Home']
-    else return ['/login', 'Login']
+    else return ['/login', 'Get Started']
   }
 
   return (
     <Link
-      className="flex underline underline-offset-8 border-slate-500 px-3 py-2 hover:text-slate-600"
+      className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md"
       to={isHomeRoute()[0]}
     >
       {isHomeRoute()[1]}
