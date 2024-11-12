@@ -11,7 +11,7 @@ export function Layout() {
 
   return (
     <main className="h-[100svh] flex flex-col justify-between">
-      <div className="flex flex-col h-[96%] items-center">
+      <div className="flex flex-col h-full items-center">
         {userData && (
           <nav className="max-w-6xl mx-auto w-full gap-2 flex flex-col">
             <p className="brand-name text-center text-[26px] text-transparent font-bold tracking-wide">
@@ -32,7 +32,7 @@ export function Layout() {
         position="bottom-center"
         richColors
       />
-      <Footer />
+      {userData && <Footer />}
     </main>
   )
 }

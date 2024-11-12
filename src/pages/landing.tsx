@@ -1,8 +1,10 @@
+import AuthButton from '@/components/AuthButton'
+
 export default function Landing() {
   document.title = 'Paper Cost'
 
   return (
-    <div className="h-full flex flex-col items-center bg-gray-100 text-gray-800 px-4 py-6">
+    <div className="flex flex-col h-full items-center bg-gray-100 text-gray-800 px-4 py-6">
       <header className="text-center mb-8">
         <h1 className="text-2xl uppercase font-bold text-yellow-600">
           Paper Cost Calculator
@@ -14,9 +16,9 @@ export default function Landing() {
 
       <main className="flex flex-col items-center space-y-6">
         <img
-          src="https://via.placeholder.com/200"
+          src="/assets/home.png"
           alt="App Preview"
-          className="rounded-lg shadow-md"
+          className="rounded-lg shadow-md w-[80%]"
         />
 
         <section className="text-center">
@@ -36,6 +38,8 @@ export default function Landing() {
             <li>Saves pricing history</li>
           </ul>
         </section>
+
+        <AuthButton />
       </main>
     </div>
   )

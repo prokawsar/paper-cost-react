@@ -25,24 +25,21 @@ export default function Footer() {
       className={` max-w-6xl mx-auto w-full flex flex-row h-11 px-5 bg-slate-50 border-t border-teal-500 rounded-t-lg items-center 
       justify-${userData ? 'between' : 'center'} ${showSettings && 'relative'}`}
     >
-      {!userData ? (
-        <AuthButton />
-      ) : (
-        <>
-          <Link to="/" className="flex flex-row items-center gap-1">
-            <Icon icon="clarity:home-line" /> Home
-          </Link>
-          <Link to="/history" className="flex flex-row items-center gap-1">
-            <Icon icon="ph:read-cv-logo-light" /> Cost History
-          </Link>
-          <button
-            onClick={() => setSettings(!showSettings)}
-            className="flex flex-row gap-1 items-center"
-          >
-            <Icon icon="solar:settings-linear" /> Settings
-          </button>
-        </>
-      )}
+      <>
+        <Link to="/" className="flex flex-row items-center gap-1">
+          <Icon icon="clarity:home-line" /> Home
+        </Link>
+        <Link to="/history" className="flex flex-row items-center gap-1">
+          <Icon icon="ph:read-cv-logo-light" /> Cost History
+        </Link>
+        <button
+          onClick={() => setSettings(!showSettings)}
+          className="flex flex-row gap-1 items-center"
+        >
+          <Icon icon="solar:settings-linear" /> Settings
+        </button>
+      </>
+
       {showSettings && (
         <div className="absolute w-20 right-3 bottom-11 flex flex-col items-start divide-y divide-orange-400 gap-1 bg-slate-50 p-2 rounded">
           <button

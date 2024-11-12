@@ -25,8 +25,6 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   })
 
-  // console.log(errors);
-
   const signIn: SubmitHandler<LoginFields> = async (payload) => {
     if (isSubmitting || Object.keys(errors).length) return
 
@@ -46,16 +44,11 @@ export default function Login() {
   document.title = 'Login'
 
   return (
-    <div className="flex w-full flex-1 flex-col justify-center gap-2 px-8 sm:max-w-md">
+    <div className="flex w-full h-full flex-col px-8 sm:max-w-md">
       <form
         onSubmit={handleSubmit(signIn)}
         className="animate-in flex w-full flex-1 flex-col justify-center gap-2"
       >
-        {/* {searchParams?.message && (
-          <p className="mt-4 border border-red-500 bg-red-100 p-4 text-center text-slate-600">
-            {searchParams.message}
-          </p>
-        )} */}
         {params.size && params.get('success') ? (
           <p className="mt-4 border border-teal-500 bg-green-100/50 rounded p-4 text-center text-slate-600">
             {params.get('success')}
@@ -121,6 +114,11 @@ export default function Login() {
           now.
         </p>
       </form>
+      <div className="flex justify-center">
+        <Link to="/" title="Home">
+          <Icon icon="mdi:home" width="28px" />
+        </Link>
+      </div>
     </div>
   )
 }

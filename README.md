@@ -1,18 +1,16 @@
 # Paper Cost
 
-This project is specifically designed with a **MOBILE**-first approach, with the user interface optimized for mobile screens to provide an enhanced and professional user experience on mobile devices.
+This project is specifically designed with a **MOBILE**-first approach, with the app, carton factory owners or workers can calculate price of their paper that utilized in factory.
 
 ## Features and Functionalities
 
-
 - [x] Email/Password based authentication system
 - [x] Dynamic paper layer adding (Maximum 10 paper)
-- [x] Price history saved in Supabase
-- [x] History trash for later recovery
+- [x] Price history saved in Supabase (Maximum 20 for free)
+- [x] History trash for later recovery (Auto delete after a week)
 - [x] Empty field validation
 - [x] Auto focus next field on press 'Enter'
 - [ ] Calculate the price on press 'Enter' from last input field
-
 
 ## Tech Stack
 
@@ -22,24 +20,25 @@ This project is specifically designed with a **MOBILE**-first approach, with the
 -> React hook form
 -> JavaScript
 -> TypeScript
+-> Zod
 -> Tailwind
 -> Supabase
 -> Playwright
 ```
 
-## Test Credentials
+## Demo Credentials
 
 Can be tested in live app
 
 ```js
-// Email
 test@gmail.com
 ```
 
 ```js
-// Password
 11111111
 ```
+
+## Development
 
 1. You'll first need a Supabase project which can be made [via the Supabase dashboard](https://database.new).
 

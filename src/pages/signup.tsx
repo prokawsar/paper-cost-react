@@ -125,6 +125,11 @@ export default function Signup() {
           {'here.'}
         </p>
       </form>
+      <div className="flex justify-center">
+        <Link to="/" title="Home">
+          <Icon icon="mdi:home" width="28px" />
+        </Link>
+      </div>
     </div>
   )
 }
